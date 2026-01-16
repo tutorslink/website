@@ -6,13 +6,10 @@
 <title>Tutors Link</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* Reset & base */
+/* Base Reset */
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
 body {background:#000; color:#fff; overflow-x:hidden;}
-a {text-decoration:none; color:inherit;}
-button {cursor:pointer; border:none; outline:none;}
-
-/* Container */
+a, button {text-decoration:none; color:inherit; cursor:pointer;}
 .container {max-width:1200px; margin:0 auto; padding:0 20px;}
 
 /* Hero */
@@ -23,8 +20,8 @@ header {
   padding:120px 20px;
   overflow:hidden;
 }
-header h1 {font-size:3rem; margin-bottom:20px; color:#fff;}
-header p {font-size:1.2rem; margin-bottom:30px; color:#fff;}
+header h1 {font-size:3rem; margin-bottom:20px;}
+header p {font-size:1.2rem; margin-bottom:30px;}
 .cta-buttons button {
   background:#fff; color:#000; font-weight:700; padding:12px 30px; margin:0 10px; border-radius:12px;
   transition:0.3s;
@@ -35,17 +32,14 @@ header p {font-size:1.2rem; margin-bottom:30px; color:#fff;}
 header::before, header::after {
   content:''; position:absolute; border-radius:50%; opacity:0.2;
 }
-header::before {
-  width:400px; height:400px; background:#ff0; top:-100px; left:-150px;
-}
-header::after {
-  width:600px; height:600px; background:#ff00ff; bottom:-200px; right:-200px;
-}
+header::before {width:400px; height:400px; background:#ff0; top:-100px; left:-150px;}
+header::after {width:600px; height:600px; background:#ff00ff; bottom:-200px; right:-200px;}
 
 /* Sections */
 section {padding:80px 0; position:relative;}
 h2 {font-size:2.5rem; margin-bottom:40px; text-align:center; background:linear-gradient(90deg,#ff0,#ff00ff,#00f0ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-p {margin-bottom:15px; line-height:1.6; color:#eee;}
+p {margin-bottom:15px; line-height:1.6; color:#eee; transition:0.3s;}
+p:hover, h4:hover, h3:hover {color:#ff0;}
 
 /* How it Works */
 .steps {display:flex; flex-wrap:wrap; justify-content:center; gap:30px;}
@@ -54,7 +48,7 @@ p {margin-bottom:15px; line-height:1.6; color:#eee;}
 .step:hover {transform:translateY(-10px); box-shadow:0 0 25px #ff0,0 0 35px #00f0ff;}
 
 /* Policies */
-.policy {background:#111; margin-bottom:20px; padding:25px; border-radius:15px; box-shadow:0 0 10px #ff00ff33; cursor:pointer; transition:0.3s;}
+.policy {background:#111; margin-bottom:20px; padding:25px; border-radius:15px; box-shadow:0 0 10px #ff00ff33; transition:0.3s; cursor:pointer;}
 .policy:hover {box-shadow:0 0 20px #ff0,0 0 25px #00f0ff;}
 .policy h4 {display:flex; justify-content:space-between; align-items:center; font-size:1.2rem;}
 .policy-content {display:none; margin-top:15px; line-height:1.5; color:#eee;}
@@ -71,40 +65,52 @@ p {margin-bottom:15px; line-height:1.6; color:#eee;}
 .tutor-card:hover {transform:translateY(-10px); box-shadow:0 0 25px #ff0,0 0 35px #00f0ff;}
 .tutor-card h3 {margin-bottom:10px; color:#ff0;}
 
+/* Staff Portal */
+#staff-portal {background:#111; padding:80px 0;}
+#staff-portal form {max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:15px;}
+#staff-portal input, #staff-portal select, #staff-portal textarea {padding:10px; border-radius:8px; border:none;}
+#staff-portal button {background:#ff0; color:#000; padding:12px; font-weight:700; border-radius:10px; cursor:pointer; transition:0.3s;}
+#staff-portal button:hover {background:#ff00ff; color:#fff;}
+
+/* Tutors Display */
+.tutor-display {display:flex; flex-wrap:wrap; gap:20px; justify-content:center;}
+.tutor-box {background:#111; padding:20px; border-radius:15px; width:250px; box-shadow:0 0 10px #ff00ff33; transition:0.3s;}
+.tutor-box h4 {color:#ff0; margin-bottom:10px;}
+.tutor-box p {color:#eee; margin-bottom:5px;}
+
+/* Support messages */
+#support {background:#222; padding:50px 20px;}
+#support form {max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:10px;}
+#support button {background:#ff0; color:#000; padding:10px; border-radius:8px; font-weight:700; transition:0.3s;}
+#support button:hover {background:#ff00ff; color:#fff;}
+
 /* Apply & Footer */
 .apply, footer {background:#000; color:#fff; text-align:center; padding:60px 20px;}
 .apply a, footer a {color:#ff0; font-weight:700; transition:0.3s;}
 .apply a:hover, footer a:hover {color:#ff00ff;}
 
-/* Smooth scroll & responsive */
-html {scroll-behavior:smooth;}
-@media(max-width:768px) {.steps,.tutor-cards{flex-direction:column; align-items:center;}}
+/* Responsive */
+@media(max-width:768px){.steps,.tutor-cards,.tutor-display{flex-direction:column; align-items:center;}}
 </style>
 </head>
 <body>
 
 <!-- Hero -->
 <header>
-  <h1>Tutors Link</h1>
-  <p>Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.</p>
-  <div class="cta-buttons">
-    <button onclick="window.location='#find-tutor'">Find a Tutor</button>
-    <button onclick="window.location='#apply'">Apply as Tutor</button>
-  </div>
+<h1>Tutors Link</h1>
+<p>Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.</p>
+<div class="cta-buttons">
+  <button onclick="window.location='#find-tutor'">Find a Tutor</button>
+  <button onclick="window.location='#apply'">Apply as Tutor</button>
+</div>
 </header>
 
 <!-- How it Works -->
 <section id="how-it-works">
 <h2>How It Works</h2>
 <div class="container steps">
-  <div class="step">
-    <h3>Students</h3>
-    <p>Browse tutors → Demo class → Make payment → Connect via Discord</p>
-  </div>
-  <div class="step">
-    <h3>Tutors</h3>
-    <p>Apply → Get approved → Teach → Receive fees securely</p>
-  </div>
+  <div class="step"><h3>Students</h3><p>Browse tutors → Demo class → Make payment → Connect via Discord</p></div>
+  <div class="step"><h3>Tutors</h3><p>Apply → Get approved → Teach → Receive fees securely</p></div>
 </div>
 </section>
 
@@ -112,47 +118,35 @@ html {scroll-behavior:smooth;}
 <section id="policies">
 <h2>Platform Policies</h2>
 <div class="container">
-  <div class="policy">
-    <h4>For Tutors</h4>
-    <div class="policy-content">
-      <ul>
-        <li>Hide your identity until payment is made.</li>
-        <li>Do not share contact info with students before payment.</li>
-        <li>Accept 40% commission of first month fees.</li>
-        <li>Must be at least 13 years old.</li>
-      </ul>
-    </div>
+  <div class="policy"><h4>For Tutors</h4>
+    <div class="policy-content"><ul>
+      <li>Hide identity until payment is made.</li>
+      <li>Do not share contact info before payment.</li>
+      <li>Accept 40% commission first month.</li>
+      <li>Must be 13+ years old.</li>
+    </ul></div>
   </div>
-  <div class="policy">
-    <h4>For Students</h4>
-    <div class="policy-content">
-      <ul>
-        <li>Pay 100% before connecting with tutor.</li>
-        <li>Do not share contact info before payment.</li>
-        <li>Fees held by Tutors Link first month, then transferred to tutor.</li>
-        <li>Prices per class fixed by tutor.</li>
-      </ul>
-    </div>
+  <div class="policy"><h4>For Students</h4>
+    <div class="policy-content"><ul>
+      <li>Pay 100% before connecting with tutor.</li>
+      <li>Do not share contact info before payment.</li>
+      <li>Fees held first month, then transferred to tutor.</li>
+      <li>Price per class fixed by tutor.</li>
+    </ul></div>
   </div>
-  <div class="policy">
-    <h4>General</h4>
-    <div class="policy-content">
-      <ul>
-        <li>Tutors Link is responsible for issues in the first month.</li>
-        <li>Not responsible for issues after first month.</li>
-        <li>Breaking policies can result in removal.</li>
-      </ul>
-    </div>
+  <div class="policy"><h4>General</h4>
+    <div class="policy-content"><ul>
+      <li>Tutors Link responsible for first-month issues.</li>
+      <li>Not responsible after first month.</li>
+      <li>Breaking policies may remove access.</li>
+    </ul></div>
   </div>
-  <div class="policy">
-    <h4>Refunds</h4>
-    <div class="policy-content">
-      <ul>
-        <li>Refunds only in first month.</li>
-        <li>Case 1: After demo class, full refund if issues arise.</li>
-        <li>Case 2: During first week, refund for classes not attended or issues proven.</li>
-      </ul>
-    </div>
+  <div class="policy"><h4>Refunds</h4>
+    <div class="policy-content"><ul>
+      <li>Refunds only first month.</li>
+      <li>Case 1: After demo class, full refund if issues.</li>
+      <li>Case 2: During first week, refund for unattended/problem classes.</li>
+    </ul></div>
   </div>
 </div>
 </section>
@@ -161,9 +155,9 @@ html {scroll-behavior:smooth;}
 <section id="reviews">
 <h2>What Students Say</h2>
 <div class="container reviews">
-  <div class="review">"Amazing tutors! Found the perfect one in minutes."</div>
-  <div class="review">"Secure payments, very reliable platform!"</div>
-  <div class="review">"Loved the demo class feature, totally stress-free."</div>
+<div class="review">"Amazing tutors! Found the perfect one in minutes."</div>
+<div class="review">"Secure payments, very reliable platform!"</div>
+<div class="review">"Loved the demo class feature, totally stress-free."</div>
 </div>
 </section>
 
@@ -171,22 +165,43 @@ html {scroll-behavior:smooth;}
 <section id="find-tutor">
 <h2>Find a Tutor</h2>
 <div class="container tutor-cards">
-  <div class="tutor-card">
-    <h3>Discord</h3>
-    <p>Connect with tutors directly through our server.</p>
-    <a href="https://discord.gg/pe8TXPgkAe" target="_blank">Join Discord</a>
-  </div>
-  <div class="tutor-card">
-    <h3>Instagram</h3>
-    <p>Check our posts for available tutors and tips.</p>
-    <a href="https://instagram.com/tutors.link" target="_blank">@tutors.link</a>
-  </div>
-  <div class="tutor-card">
-    <h3>TikTok</h3>
-    <p>Watch tutors explain subjects in short videos.</p>
-    <a href="https://tiktok.com/@tutors_link" target="_blank">@tutors_link</a>
-  </div>
+  <div class="tutor-card"><h3>Discord</h3><p>Connect with tutors via our server.</p><a href="https://discord.gg/pe8TXPgkAe" target="_blank">Join Discord</a></div>
+  <div class="tutor-card"><h3>Instagram</h3><p>Check our posts for tutors & tips.</p><a href="https://instagram.com/tutors.link" target="_blank">@tutors.link</a></div>
+  <div class="tutor-card"><h3>TikTok</h3><p>Watch short tutor videos.</p><a href="https://tiktok.com/@tutors_link" target="_blank">@tutors_link</a></div>
 </div>
+</section>
+
+<!-- Staff Portal -->
+<section id="staff-portal">
+<h2>Staff Portal - Add Tutor</h2>
+<form id="add-tutor-form">
+  <input type="text" placeholder="Tutor Name" required>
+  <input type="text" placeholder="Subjects" required>
+  <input type="text" placeholder="Price per class" required>
+  <input type="text" placeholder="Time Zone" required>
+  <input type="text" placeholder="Languages" required>
+  <select required>
+    <option value="">Select Category</option>
+    <option>IGCSE</option>
+    <option>AS/A Levels</option>
+    <option>University</option>
+    <option>Test Preparation</option>
+    <option>Other</option>
+  </select>
+  <button type="submit">Add Tutor</button>
+</form>
+<div class="tutor-display" id="tutor-list"></div>
+</section>
+
+<!-- Support Messages -->
+<section id="support">
+<h2>Student Support</h2>
+<form id="support-form">
+  <input type="text" placeholder="Your Name" required>
+  <input type="email" placeholder="Your Email" required>
+  <textarea placeholder="Your Question" rows="4" required></textarea>
+  <button type="submit">Send Message</button>
+</form>
 </section>
 
 <!-- Apply as Tutor -->
@@ -203,16 +218,46 @@ html {scroll-behavior:smooth;}
 </footer>
 
 <script>
-// Expand policy by clicking anywhere
-const policies = document.querySelectorAll('.policy');
-policies.forEach(policy => {
+// Policies expand on click anywhere
+document.querySelectorAll('.policy').forEach(policy => {
   policy.addEventListener('click', () => {
     const content = policy.querySelector('.policy-content');
-    const isVisible = content.style.display === 'block';
-    content.style.display = isVisible ? 'none' : 'block';
+    content.style.display = (content.style.display === 'block') ? 'none' : 'block';
   });
 });
-</script>
 
+// Tutor form submission
+const tutorForm = document.getElementById('add-tutor-form');
+const tutorList = document.getElementById('tutor-list');
+tutorForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const data = new FormData(tutorForm);
+  const tutorHTML = `<div class="tutor-box">
+    <h4>${data.get('0')}</h4>
+    <p>Subjects: ${data.get('1')}</p>
+    <p>Price: ${data.get('2')}</p>
+    <p>Time Zone: ${data.get('3')}</p>
+    <p>Languages: ${data.get('4')}</p>
+    <p>Category: ${data.get('5')}</p>
+  </div>`;
+  tutorList.insertAdjacentHTML('beforeend', tutorHTML);
+  tutorForm.reset();
+});
+
+// Discord webhook for student support
+const supportForm = document.getElementById('support-form');
+supportForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const data = new FormData(supportForm);
+  // Replace YOUR_DISCORD_WEBHOOK_URL with your actual webhook URL
+  fetch('YOUR_DISCORD_WEBHOOK_URL', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({content:`New support message:\nName: ${data.get('0')}\nEmail: ${data.get('1')}\nQuestion: ${data.get('2')}`})
+  });
+  alert('Message sent to staff Discord!');
+  supportForm.reset();
+});
+</script>
 </body>
 </html>
