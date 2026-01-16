@@ -1,901 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tutors Link — Anonymous, Secure Tutoring</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root {
-    --bg: #0b0f19;
-    --bg-soft: #12172a;
-    --card: #151a30;
-    --primary: #4f8cff;
-    --accent: #22d3ee;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --border: rgba(255,255,255,0.08);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: radial-gradient(1200px 600px at 10% -10%, #1b2350, transparent),
-                radial-gradient(1200px 600px at 90% 10%, #0ea5e9, transparent),
-                var(--bg);
-    color: var(--text);
-}
-
-/* NAVBAR */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    backdrop-filter: blur(12px);
-    background: rgba(11, 15, 25, 0.7);
-    border-bottom: 1px solid var(--border);
-    z-index: 1000;
-}
-
-.nav-inner {
-    max-width: 1200px;
-    margin: auto;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: white;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    color: white;
-}
-
-/* SECTIONS */
-section {
-    max-width: 1200px;
-    margin: auto;
-    padding: 6rem 2rem;
-}
-
-.hero {
-    padding-top: 9rem;
-    text-align: center;
-}
-
-.hero h1 {
-    font-size: 3.2rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-}
-
-.hero span {
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    max-width: 800px;
-    margin: auto;
-    font-size: 1.2rem;
-    color: var(--muted);
-}
-
-.hero-buttons {
-    margin-top: 2.5rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.btn {
-    padding: 0.9rem 1.6rem;
-    border-radius: 10px;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.btn-primary {
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    color: black;
-}
-
-.btn-outline {
-    border: 1px solid var(--border);
-    color: white;
-}
-
-/* CARDS */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.card {
-    background: linear-gradient(180deg, var(--card), #0e1325);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(79,140,255,0.15);
-}
-
-.card h3 {
-    margin-bottom: 0.8rem;
-}
-
-.card p {
-    color: var(--muted);
-}
-
-/* HEADERS */
-.section-title {
-    text-align: center;
-}
-
-.section-title h2 {
-    font-size: 2.4rem;
-}
-
-.section-title p {
-    margin-top: 1rem;
-    color: var(--muted);
-}
-
-/* REFUNDS */
-.refund-box {
-    max-width: 800px;
-    margin: 3rem auto 0;
-    background: linear-gradient(180deg, #1a1f3c, #0b1022);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2.5rem;
-}
-
-.refund-box h3 {
-    margin-top: 1.5rem;
-}
-
-/* FOOTER */
-footer {
-    border-top: 1px solid var(--border);
-    padding: 3rem 2rem;
-    text-align: center;
-    color: var(--muted);
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2.3rem;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutors Link</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & base */
+    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif;}
+    body {background:#f7f8fc; color:#333;}
+    a {text-decoration:none; color:inherit;}
+    button {cursor:pointer; border:none; outline:none;}
+    
+    /* Container */
+    .container {max-width:1200px; margin:0 auto; padding:0 20px;}
+    
+    /* Header / Hero */
+    header {background:#6c63ff; color:white; padding:100px 20px; text-align:center;}
+    header h1 {font-size:3rem; margin-bottom:20px;}
+    header p {font-size:1.2rem; margin-bottom:30px;}
+    .cta-buttons button {
+      background:white; color:#6c63ff; font-weight:600; padding:12px 30px; margin:0 10px; border-radius:8px;
+      transition:0.3s; 
     }
-}
-</style>
-</head>
-
-<body>
-
-<!-- NAV -->
-<nav class="navbar">
-    <div class="nav-inner">
-        <div class="logo">Tutors Link</div>
-        <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#students">Students</a>
-            <a href="#tutors">Tutors</a>
-            <a href="#refunds">Refunds</a>
-        </div>
-    </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="home">
-    <h1>Anonymous. Secure.<br><span>Real Tutoring.</span></h1>
-    <p>
-        Tutors Link connects students and tutors without exposing identities.
-        We handle matching, communication, and payments — so learning stays safe, private, and professional.
-    </p>
-
-    <div class="hero-buttons">
-        <a href="#students" class="btn btn-primary">I’m a Student</a>
-        <a href="#tutors" class="btn btn-outline">I’m a Tutor</a>
-    </div>
-</section>
-
-<!-- STUDENTS -->
-<section id="students">
-    <div class="section-title">
-        <h2>For Students</h2>
-        <p>Learn without risk. Your identity stays protected.</p>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Private by Design</h3>
-            <p>No personal info shared. Ever.</p>
-        </div>
-        <div class="card">
-            <h3>Verified Tutors</h3>
-            <p>We manually review and match tutors.</p>
-        </div>
-        <div class="card">
-            <h3>Safe Payments</h3>
-            <p>Money handled securely by Tutors Link.</p>
-        </div>
-    </div>
-</section>
-
-<!-- TUTORS -->
-<section id="tutors">
-    <div class="section-title">
-        <h2>For Tutors</h2>
-        <p>Teach seriously. Stay anonymous.</p>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Anonymous Teaching</h3>
-            <p>No direct contact sharing with students.</p>
-        </div>
-        <div class="card">
-            <h3>Fair Pay</h3>
-            <p>You’re paid for real work — no nonsense.</p>
-        </div>
-        <div class="card">
-            <h3>Support & Protection</h3>
-            <p>We step in if issues arise.</p>
-        </div>
-    </div>
-</section>
-
-<!-- REFUNDS -->
-<section id="refunds">
-    <div class="section-title">
-        <h2>Refund Policy</h2>
-        <p>Clear, fair, and transparent.</p>
-    </div>
-
-    <div class="refund-box">
-        <p><strong>Refunds are available only within the first month.</strong></p>
-
-        <h3>Demo Class Refund</h3>
-        <p>
-            If a demo class takes place and either party decides not to continue,
-            the student receives a 100% refund — provided no policies were violated.
-        </p>
-
-        <h3>First Week Refund</h3>
-        <p>
-            If issues arise after continuing, refunds are issued for unattended or problematic sessions.
-            Proof may be required. Tutors are paid for properly completed classes.
-        </p>
-    </div>
-</section>
-
-<footer>
-    <p>© 2024 Tutors Link</p>
-    <p>Privacy-first tutoring connections.</p>
-</footer>
-
-</body>
-</html>
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        section:first-of-type {
-            margin-top: 60px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #1e40af;
-            margin-bottom: 1.5rem;
-        }
-
-        h2 {
-            font-size: 2rem;
-            color: #1e40af;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        h3 {
-            font-size: 1.3rem;
-            color: #1e40af;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .home-content {
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        .hero-text {
-            font-size: 1.3rem;
-            color: #555;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-box {
-            background-color: #f8fafc;
-            padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(30, 64, 175, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .info-card {
-            background-color: #f8fafc;
-            padding: 2rem;
-            border-radius: 8px;
-            border-left: 4px solid #1e40af;
-        }
-
-        .info-card ul {
-            margin-left: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .info-card li {
-            margin-bottom: 0.5rem;
-        }
-
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .step-box {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid #1e40af;
-            text-align: center;
-            position: relative;
-        }
-
-        .step-number {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #1e40af;
-            color: #ffffff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .step-title {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            color: #1e40af;
-            font-weight: bold;
-        }
-
-        .refund-box {
-            background-color: #fef3c7;
-            border: 2px solid #fbbf24;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .refund-box p {
-            font-size: 1.1rem;
-            color: #78350f;
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 2rem auto;
-            background-color: #f8fafc;
-            padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #1e40af;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #1e40af;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .submit-btn {
-            background-color: #1e40af;
-            color: #ffffff;
-            padding: 0.75rem 2rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        .submit-btn:hover {
-            background-color: #1e3a8a;
-        }
-
-        footer {
-            background-color: #1e40af;
-            color: #ffffff;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: #1e40af;
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.7rem;
-            }
-
-            section {
-                padding: 3rem 1rem;
-            }
-
-            .features,
-            .info-grid,
-            .steps-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .cta-buttons button:hover {background:#5a52d4; color:white;}
+    
+    /* Sections */
+    section {padding:80px 0;}
+    h2 {font-size:2rem; margin-bottom:20px; text-align:center;}
+    p {margin-bottom:15px; line-height:1.6;}
+    
+    /* How it works */
+    .steps {display:flex; flex-wrap:wrap; justify-content:center; gap:30px;}
+    .step {background:white; padding:30px; border-radius:15px; flex:1 1 300px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+    .step h3 {margin-bottom:10px; color:#6c63ff;}
+    
+    /* Policies */
+    .policy {background:white; margin-bottom:15px; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+    .policy h4 {cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
+    .policy-content {display:none; margin-top:10px; line-height:1.5;}
+    
+    /* Reviews */
+    .reviews {display:flex; flex-wrap:wrap; gap:20px; justify-content:center;}
+    .review {background:white; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); width:250px;}
+    
+    /* Find a Tutor section */
+    #find-tutor {padding:80px 0; background:#f1f3ff;}
+    .tutor-cards {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
+    .tutor-card {
+      background:white; padding:20px; border-radius:12px; width:250px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05); transition:0.3s;
+    }
+    .tutor-card:hover {transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.15);}
+    .tutor-card a {color:#6c63ff; font-weight:600;}
+    
+    /* Apply & Footer */
+    .apply, footer {background:#6c63ff; color:white; text-align:center; padding:50px 20px;}
+    .apply a, footer a {color:white; font-weight:600;}
+    footer p {margin-top:20px;}
+    
+    /* Smooth scroll & hover effects */
+    html {scroll-behavior: smooth;}
+    .step, .review {transition: transform 0.3s, box-shadow 0.3s;}
+    .step:hover, .review:hover {transform: translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.15);}
+    
+    /* Responsive */
+    @media(max-width:768px) {
+      .steps {flex-direction:column; align-items:center;}
+    }
+  </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">Tutors Link</div>
-            <button class="menu-toggle" id="menuToggle">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#students">Students</a></li>
-                <li><a href="#tutors">Tutors</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#refunds">Refunds</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+  <!-- Hero -->
+  <header>
+    <h1>Tutors Link</h1>
+    <p>Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.</p>
+    <div class="cta-buttons">
+      <button onclick="window.location='#find-tutor'">Find a Tutor</button>
+      <button onclick="window.location='#apply'">Apply as Tutor</button>
+    </div>
+  </header>
+
+  <!-- How it Works -->
+  <section id="how-it-works">
+    <h2>How It Works</h2>
+    <div class="container steps">
+      <div class="step">
+        <h3>Students</h3>
+        <p>Browse tutors → Demo class → Make payment → Connect via Discord</p>
+      </div>
+      <div class="step">
+        <h3>Tutors</h3>
+        <p>Apply → Get approved → Teach → Receive fees securely</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Policies -->
+  <section id="policies">
+    <h2>Platform Policies</h2>
+    <div class="container">
+      <div class="policy">
+        <h4>For Tutors <span>+</span></h4>
+        <div class="policy-content">
+          <ul>
+            <li>Hide your identity until payment is made.</li>
+            <li>Do not share contact info with students before payment.</li>
+            <li>Accept 40% commission of first month fees.</li>
+            <li>Must be at least 13 years old.</li>
+          </ul>
         </div>
-    </nav>
-
-    <section id="home">
-        <div class="home-content">
-            <h1>Welcome to Tutors Link</h1>
-            <p class="hero-text">
-                Tutors Link is a trusted service that connects students with qualified tutors while maintaining complete anonymity for both parties. We act as the secure middleman, ensuring a safe, professional, and private tutoring experience.
-            </p>
-            <p class="hero-text">
-                Whether you're a student seeking help or a tutor looking to share your expertise, Tutors Link provides a seamless platform that protects your identity while facilitating high-quality education.
-            </p>
-
-            <div class="features">
-                <div class="feature-box">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Complete Anonymity</h3>
-                    <p>Your personal information remains private. We handle all communications and transactions.</p>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Safe & Secure</h3>
-                    <p>Our platform ensures a safe environment for both students and tutors with verified processes.</p>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Simple Process</h3>
-                    <p>Get matched with the right tutor or student quickly through our streamlined system.</p>
-                </div>
-            </div>
+      </div>
+      <div class="policy">
+        <h4>For Students <span>+</span></h4>
+        <div class="policy-content">
+          <ul>
+            <li>Pay 100% before connecting with tutor.</li>
+            <li>Do not share contact info before payment.</li>
+            <li>Fees held by Tutors Link first month, then transferred to tutor.</li>
+            <li>Prices per class fixed by tutor.</li>
+          </ul>
         </div>
-    </section>
-
-    <section id="students">
-        <h2>For Students</h2>
-        <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
-            Find the perfect tutor for your needs while keeping your identity completely private. Tutors Link handles everything, so you can focus on learning.
-        </p>
-
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>How to Request a Tutor</h3>
-                <p>Getting started is simple:</p>
-                <ul>
-                    <li>Submit your tutoring request through our platform</li>
-                    <li>Specify your subject, level, and preferences</li>
-                    <li>We match you with a qualified tutor</li>
-                    <li>Begin your sessions with complete anonymity</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>Subjects & Levels Available</h3>
-                <p>We offer tutoring across a wide range:</p>
-                <ul>
-                    <li>Mathematics (Elementary to Advanced)</li>
-                    <li>Sciences (Physics, Chemistry, Biology)</li>
-                    <li>Languages (English, Spanish, French, etc.)</li>
-                    <li>Test Preparation (SAT, ACT, GRE, etc.)</li>
-                    <li>And many more subjects</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>Your Privacy Guaranteed</h3>
-                <p>We take your privacy seriously:</p>
-                <ul>
-                    <li>No personal information shared with tutors</li>
-                    <li>All communication goes through Tutors Link</li>
-                    <li>Secure payment processing</li>
-                    <li>Anonymous session environment</li>
-                </ul>
-            </div>
+      </div>
+      <div class="policy">
+        <h4>General <span>+</span></h4>
+        <div class="policy-content">
+          <ul>
+            <li>Tutors Link is responsible for issues in the first month.</li>
+            <li>Not responsible for issues after first month.</li>
+            <li>Breaking policies can result in removal.</li>
+          </ul>
         </div>
-    </section>
-
-    <section id="tutors">
-        <h2>For Tutors</h2>
-        <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
-            Join our network of qualified tutors and connect with students who need your expertise. Your privacy is protected every step of the way.
-        </p>
-
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>How to Join</h3>
-                <p>Becoming a tutor is straightforward:</p>
-                <ul>
-                    <li>Submit your application with qualifications</li>
-                    <li>Complete our verification process</li>
-                    <li>Set your availability and subjects</li>
-                    <li>Start receiving tutoring requests</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>Commission Structure</h3>
-                <p>Understanding our fees:</p>
-                <ul>
-                    <li>Tutors Link takes a commission from each session</li>
-                    <li>Transparent pricing with no hidden fees</li>
-                    <li>You set your base rates</li>
-                    <li>Regular and timely payments</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>Tutor Privacy</h3>
-                <p>Your identity remains protected:</p>
-                <ul>
-                    <li>Student identities are never revealed</li>
-                    <li>All sessions conducted through our platform</li>
-                    <li>Secure payment processing</li>
-                    <li>Professional support available</li>
-                </ul>
-            </div>
+      </div>
+      <div class="policy">
+        <h4>Refunds <span>+</span></h4>
+        <div class="policy-content">
+          <ul>
+            <li>Refunds only in first month.</li>
+            <li>Case 1: After demo class, full refund if issues arise.</li>
+            <li>Case 2: During first week, refund for classes not attended or issues proven.</li>
+          </ul>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section id="how-it-works">
-        <h2>How It Works</h2>
-        <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
-            Our simple, secure process ensures a smooth experience for both students and tutors.
-        </p>
+  <!-- Reviews -->
+  <section id="reviews">
+    <h2>What Students Say</h2>
+    <div class="container reviews">
+      <div class="review">"Amazing tutors! Found the perfect one in minutes."</div>
+      <div class="review">"Secure payments, very reliable platform!"</div>
+      <div class="review">"Loved the demo class feature, totally stress-free."</div>
+    </div>
+  </section>
 
-        <div class="steps-container">
-            <div class="step-box">
-                <div class="step-number">1</div>
-                <div class="step-title">Submit Request</div>
-                <p>Students submit their tutoring needs, including subject, level, and schedule preferences.</p>
-            </div>
+  <!-- Find a Tutor -->
+  <section id="find-tutor">
+    <h2>Find a Tutor</h2>
+    <div class="container tutor-cards">
+      <div class="tutor-card">
+        <h3>Discord Tutors Channel</h3>
+        <p>Browse tutors directly on Discord.</p>
+        <a href="https://discord.com/channels/yourserver/find-tutor" target="_blank">Go to Channel</a>
+      </div>
+      <div class="tutor-card">
+        <h3>Instagram Tutors</h3>
+        <p>Check our Instagram posts for available tutors.</p>
+        <a href="https://instagram.com/yourprofile" target="_blank">Visit Instagram</a>
+      </div>
+      <div class="tutor-card">
+        <h3>TikTok Tutors</h3>
+        <p>See short videos of tutors explaining their specialties.</p>
+        <a href="https://tiktok.com/@yourprofile" target="_blank">Visit TikTok</a>
+      </div>
+    </div>
+  </section>
 
-            <div class="step-box">
-                <div class="step-number">2</div>
-                <div class="step-title">Match & Verify</div>
-                <p>Tutors Link matches students with qualified tutors and verifies all credentials.</p>
-            </div>
+  <!-- Apply as Tutor -->
+  <section id="apply" class="apply">
+    <h2>Apply as a Tutor</h2>
+    <p>Join our Discord server and DM the Tutors Link bot. Staff will guide you through the Google form application process.</p>
+    <a href="https://discord.com/invite/yourserver" target="_blank">Join Discord</a>
+  </section>
 
-            <div class="step-box">
-                <div class="step-number">3</div>
-                <div class="step-title">Anonymous Connection</div>
-                <p>Both parties are connected through our secure platform without revealing personal information.</p>
-            </div>
+  <!-- Footer -->
+  <footer>
+    <p>Follow us on <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a> | <a href="https://tiktok.com/@yourprofile" target="_blank">TikTok</a></p>
+    <p>&copy; 2026 Tutors Link. All rights reserved.</p>
+  </footer>
 
-            <div class="step-box">
-                <div class="step-number">4</div>
-                <div class="step-title">Secure Sessions</div>
-                <p>Tutoring sessions take place through our platform with full privacy protection.</p>
-            </div>
-
-            <div class="step-box">
-                <div class="step-number">5</div>
-                <div class="step-title">Safe Payment</div>
-                <p>Tutors Link handles all payments securely and distributes earnings to tutors.</p>
-            </div>
-
-            <div class="step-box">
-                <div class="step-number">6</div>
-                <div class="step-title">Ongoing Support</div>
-                <p>Our team provides continuous support to ensure quality and satisfaction for all users.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="refunds">
-        <h2>Refund Policy</h2>
-        <div class="refund-box">
-            <h3>📋 Refund Guidelines</h3>
-           <h3>📋 Refund Policy Overview</h3>
-
-<p>
-    <strong>Refunds from Tutors Link are only available within the first month of service.</strong>
-</p>
-
-<h3>Demo Class Refund</h3>
-<p>
-    If a student and tutor attend a demo class and either party decides not to continue for any reason,
-    the student is eligible for a <strong>100% refund</strong>, provided no Tutors Link policies were violated
-    (for example, sharing contact information during the demo class).
-</p>
-
-<h3>First Week Refund</h3>
-<p>
-    If the student and tutor decide to continue after the demo class but later stop within the first week
-    due to a valid issue (such as the tutor not attending sessions or the student behaving inappropriately),
-    the student will receive:
-</p>
-
-<ul style="text-align: left; max-width: 600px; margin: 0 auto;">
-    <li>A refund for all unattended classes</li>
-    <li>A refund for classes that had confirmed issues</li>
-</ul>
-
-<p style="margin-top: 1rem;">
-    Proof may be required. Tutors will still be paid for classes that were completed properly.
-</p>
-
-            <p style="margin-top: 1rem;">
-                <strong>This section is currently being finalized and will be updated with complete information soon.</strong>
-            </p>
-        </div>
-    </section>
-
-    <section id="contact">
-        <h2>Contact Us</h2>
-        <p style="text-align: center; max-width: 800px; margin: 0 auto 1rem;">
-            Have questions or need assistance? Fill out the form below and we'll get back to you as soon as possible.
-        </p>
-
-        <form class="contact-form" id="contactForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your full name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Tell us how we can help you..." required></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn">Send Message</button>
-        </form>
-    </section>
-
-    <footer>
-        <p>&copy; 2024 Tutors Link. All rights reserved.</p>
-        <p>Connecting students and tutors with complete anonymity and security.</p>
-    </footer>
-
-    <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-
-        menuToggle.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-        });
-
-        const navLinkItems = document.querySelectorAll('.nav-links a');
-        navLinkItems.forEach(function(link) {
-            link.addEventListener('click', function() {
-                navLinks.classList.remove('active');
-            });
-        });
-
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            alert('Thank you for your message, ' + name + '! We will get back to you at ' + email + ' soon.');
-
-            contactForm.reset();
-        });
-
-        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offsetTop = target.offsetTop - 70;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+  <!-- JS for collapsible policies -->
+  <script>
+    const policies = document.querySelectorAll('.policy h4');
+    policies.forEach(policy => {
+      policy.addEventListener('click', () => {
+        const content = policy.nextElementSibling;
+        const isVisible = content.style.display === 'block';
+        content.style.display = isVisible ? 'none' : 'block';
+        policy.querySelector('span').textContent = isVisible ? '+' : '−';
+      });
+    });
+  </script>
 
 </body>
 </html>
