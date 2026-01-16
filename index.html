@@ -1,39 +1,318 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutors Link - Anonymous Tutoring Connection Service</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutors Link — Anonymous, Secure Tutoring</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        html {
-            scroll-behavior: smooth;
-        }
+<style>
+:root {
+    --bg: #0b0f19;
+    --bg-soft: #12172a;
+    --card: #151a30;
+    --primary: #4f8cff;
+    --accent: #22d3ee;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,0.08);
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #ffffff;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #1e40af;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
+html {
+    scroll-behavior: smooth;
+}
 
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, #1b2350, transparent),
+                radial-gradient(1200px 600px at 90% 10%, #0ea5e9, transparent),
+                var(--bg);
+    color: var(--text);
+}
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 15, 25, 0.7);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+
+.nav-inner {
+    max-width: 1200px;
+    margin: auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* SECTIONS */
+section {
+    max-width: 1200px;
+    margin: auto;
+    padding: 6rem 2rem;
+}
+
+.hero {
+    padding-top: 9rem;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.hero span {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    max-width: 800px;
+    margin: auto;
+    font-size: 1.2rem;
+    color: var(--muted);
+}
+
+.hero-buttons {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.9rem 1.6rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: black;
+}
+
+.btn-outline {
+    border: 1px solid var(--border);
+    color: white;
+}
+
+/* CARDS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.card {
+    background: linear-gradient(180deg, var(--card), #0e1325);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(79,140,255,0.15);
+}
+
+.card h3 {
+    margin-bottom: 0.8rem;
+}
+
+.card p {
+    color: var(--muted);
+}
+
+/* HEADERS */
+.section-title {
+    text-align: center;
+}
+
+.section-title h2 {
+    font-size: 2.4rem;
+}
+
+.section-title p {
+    margin-top: 1rem;
+    color: var(--muted);
+}
+
+/* REFUNDS */
+.refund-box {
+    max-width: 800px;
+    margin: 3rem auto 0;
+    background: linear-gradient(180deg, #1a1f3c, #0b1022);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+}
+
+.refund-box h3 {
+    margin-top: 1.5rem;
+}
+
+/* FOOTER */
+footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.3rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <div class="logo">Tutors Link</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#students">Students</a>
+            <a href="#tutors">Tutors</a>
+            <a href="#refunds">Refunds</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <h1>Anonymous. Secure.<br><span>Real Tutoring.</span></h1>
+    <p>
+        Tutors Link connects students and tutors without exposing identities.
+        We handle matching, communication, and payments — so learning stays safe, private, and professional.
+    </p>
+
+    <div class="hero-buttons">
+        <a href="#students" class="btn btn-primary">I’m a Student</a>
+        <a href="#tutors" class="btn btn-outline">I’m a Tutor</a>
+    </div>
+</section>
+
+<!-- STUDENTS -->
+<section id="students">
+    <div class="section-title">
+        <h2>For Students</h2>
+        <p>Learn without risk. Your identity stays protected.</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Private by Design</h3>
+            <p>No personal info shared. Ever.</p>
+        </div>
+        <div class="card">
+            <h3>Verified Tutors</h3>
+            <p>We manually review and match tutors.</p>
+        </div>
+        <div class="card">
+            <h3>Safe Payments</h3>
+            <p>Money handled securely by Tutors Link.</p>
+        </div>
+    </div>
+</section>
+
+<!-- TUTORS -->
+<section id="tutors">
+    <div class="section-title">
+        <h2>For Tutors</h2>
+        <p>Teach seriously. Stay anonymous.</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Anonymous Teaching</h3>
+            <p>No direct contact sharing with students.</p>
+        </div>
+        <div class="card">
+            <h3>Fair Pay</h3>
+            <p>You’re paid for real work — no nonsense.</p>
+        </div>
+        <div class="card">
+            <h3>Support & Protection</h3>
+            <p>We step in if issues arise.</p>
+        </div>
+    </div>
+</section>
+
+<!-- REFUNDS -->
+<section id="refunds">
+    <div class="section-title">
+        <h2>Refund Policy</h2>
+        <p>Clear, fair, and transparent.</p>
+    </div>
+
+    <div class="refund-box">
+        <p><strong>Refunds are available only within the first month.</strong></p>
+
+        <h3>Demo Class Refund</h3>
+        <p>
+            If a demo class takes place and either party decides not to continue,
+            the student receives a 100% refund — provided no policies were violated.
+        </p>
+
+        <h3>First Week Refund</h3>
+        <p>
+            If issues arise after continuing, refunds are issued for unattended or problematic sessions.
+            Proof may be required. Tutors are paid for properly completed classes.
+        </p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2024 Tutors Link</p>
+    <p>Privacy-first tutoring connections.</p>
+</footer>
+
+</body>
+</html>
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
