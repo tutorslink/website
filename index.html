@@ -1,207 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutors Link</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* Reset & base */
-    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif;}
-    body {background:#f7f8fc; color:#333;}
-    a {text-decoration:none; color:inherit;}
-    button {cursor:pointer; border:none; outline:none;}
-    
-    /* Container */
-    .container {max-width:1200px; margin:0 auto; padding:0 20px;}
-    
-    /* Header / Hero */
-    header {background:#6c63ff; color:white; padding:100px 20px; text-align:center;}
-    header h1 {font-size:3rem; margin-bottom:20px;}
-    header p {font-size:1.2rem; margin-bottom:30px;}
-    .cta-buttons button {
-      background:white; color:#6c63ff; font-weight:600; padding:12px 30px; margin:0 10px; border-radius:8px;
-      transition:0.3s; 
-    }
-    .cta-buttons button:hover {background:#5a52d4; color:white;}
-    
-    /* Sections */
-    section {padding:80px 0;}
-    h2 {font-size:2rem; margin-bottom:20px; text-align:center;}
-    p {margin-bottom:15px; line-height:1.6;}
-    
-    /* How it works */
-    .steps {display:flex; flex-wrap:wrap; justify-content:center; gap:30px;}
-    .step {background:white; padding:30px; border-radius:15px; flex:1 1 300px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-    .step h3 {margin-bottom:10px; color:#6c63ff;}
-    
-    /* Policies */
-    .policy {background:white; margin-bottom:15px; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-    .policy h4 {cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
-    .policy-content {display:none; margin-top:10px; line-height:1.5;}
-    
-    /* Reviews */
-    .reviews {display:flex; flex-wrap:wrap; gap:20px; justify-content:center;}
-    .review {background:white; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); width:250px;}
-    
-    /* Find a Tutor section */
-    #find-tutor {padding:80px 0; background:#f1f3ff;}
-    .tutor-cards {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
-    .tutor-card {
-      background:white; padding:20px; border-radius:12px; width:250px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05); transition:0.3s;
-    }
-    .tutor-card:hover {transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.15);}
-    .tutor-card a {color:#6c63ff; font-weight:600;}
-    
-    /* Apply & Footer */
-    .apply, footer {background:#6c63ff; color:white; text-align:center; padding:50px 20px;}
-    .apply a, footer a {color:white; font-weight:600;}
-    footer p {margin-top:20px;}
-    
-    /* Smooth scroll & hover effects */
-    html {scroll-behavior: smooth;}
-    .step, .review {transition: transform 0.3s, box-shadow 0.3s;}
-    .step:hover, .review:hover {transform: translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.15);}
-    
-    /* Responsive */
-    @media(max-width:768px) {
-      .steps {flex-direction:column; align-items:center;}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutors Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Reset & base */
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
+body {background:#000; color:#fff; overflow-x:hidden;}
+a {text-decoration:none; color:inherit;}
+button {cursor:pointer; border:none; outline:none;}
+
+/* Container */
+.container {max-width:1200px; margin:0 auto; padding:0 20px;}
+
+/* Hero */
+header {
+  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  position:relative;
+  text-align:center;
+  padding:120px 20px;
+  overflow:hidden;
+}
+header h1 {font-size:3rem; margin-bottom:20px; color:#fff;}
+header p {font-size:1.2rem; margin-bottom:30px; color:#fff;}
+.cta-buttons button {
+  background:#fff; color:#000; font-weight:700; padding:12px 30px; margin:0 10px; border-radius:12px;
+  transition:0.3s;
+}
+.cta-buttons button:hover {background:#ff0; color:#000; transform:scale(1.05);}
+
+/* Abstract decorations */
+header::before, header::after {
+  content:''; position:absolute; border-radius:50%; opacity:0.2;
+}
+header::before {
+  width:400px; height:400px; background:#ff0; top:-100px; left:-150px;
+}
+header::after {
+  width:600px; height:600px; background:#ff00ff; bottom:-200px; right:-200px;
+}
+
+/* Sections */
+section {padding:80px 0; position:relative;}
+h2 {font-size:2.5rem; margin-bottom:40px; text-align:center; background:linear-gradient(90deg,#ff0,#ff00ff,#00f0ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+p {margin-bottom:15px; line-height:1.6; color:#eee;}
+
+/* How it Works */
+.steps {display:flex; flex-wrap:wrap; justify-content:center; gap:30px;}
+.step {background:#111; padding:30px; border-radius:20px; flex:1 1 300px; text-align:center; box-shadow:0 0 15px #ff00ff55; transition:0.3s;}
+.step h3 {margin-bottom:15px; color:#ff0;}
+.step:hover {transform:translateY(-10px); box-shadow:0 0 25px #ff0,0 0 35px #00f0ff;}
+
+/* Policies */
+.policy {background:#111; margin-bottom:20px; padding:25px; border-radius:15px; box-shadow:0 0 10px #ff00ff33; cursor:pointer; transition:0.3s;}
+.policy:hover {box-shadow:0 0 20px #ff0,0 0 25px #00f0ff;}
+.policy h4 {display:flex; justify-content:space-between; align-items:center; font-size:1.2rem;}
+.policy-content {display:none; margin-top:15px; line-height:1.5; color:#eee;}
+
+/* Reviews */
+.reviews {display:flex; flex-wrap:wrap; gap:25px; justify-content:center;}
+.review {background:#111; padding:25px; border-radius:15px; box-shadow:0 0 10px #ff00ff33; width:250px; transition:0.3s;}
+.review:hover {transform:translateY(-10px); box-shadow:0 0 25px #ff0,0 0 35px #00f0ff;}
+
+/* Find a Tutor */
+#find-tutor {background:#111; padding:100px 0;}
+.tutor-cards {display:flex; flex-wrap:wrap; justify-content:center; gap:25px;}
+.tutor-card {background:#222; padding:25px; border-radius:15px; width:250px; text-align:center; box-shadow:0 0 10px #ff00ff33; transition:0.3s;}
+.tutor-card:hover {transform:translateY(-10px); box-shadow:0 0 25px #ff0,0 0 35px #00f0ff;}
+.tutor-card h3 {margin-bottom:10px; color:#ff0;}
+
+/* Apply & Footer */
+.apply, footer {background:#000; color:#fff; text-align:center; padding:60px 20px;}
+.apply a, footer a {color:#ff0; font-weight:700; transition:0.3s;}
+.apply a:hover, footer a:hover {color:#ff00ff;}
+
+/* Smooth scroll & responsive */
+html {scroll-behavior:smooth;}
+@media(max-width:768px) {.steps,.tutor-cards{flex-direction:column; align-items:center;}}
+</style>
 </head>
 <body>
 
-  <!-- Hero -->
-  <header>
-    <h1>Tutors Link</h1>
-    <p>Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.</p>
-    <div class="cta-buttons">
-      <button onclick="window.location='#find-tutor'">Find a Tutor</button>
-      <button onclick="window.location='#apply'">Apply as Tutor</button>
+<!-- Hero -->
+<header>
+  <h1>Tutors Link</h1>
+  <p>Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.</p>
+  <div class="cta-buttons">
+    <button onclick="window.location='#find-tutor'">Find a Tutor</button>
+    <button onclick="window.location='#apply'">Apply as Tutor</button>
+  </div>
+</header>
+
+<!-- How it Works -->
+<section id="how-it-works">
+<h2>How It Works</h2>
+<div class="container steps">
+  <div class="step">
+    <h3>Students</h3>
+    <p>Browse tutors → Demo class → Make payment → Connect via Discord</p>
+  </div>
+  <div class="step">
+    <h3>Tutors</h3>
+    <p>Apply → Get approved → Teach → Receive fees securely</p>
+  </div>
+</div>
+</section>
+
+<!-- Policies -->
+<section id="policies">
+<h2>Platform Policies</h2>
+<div class="container">
+  <div class="policy">
+    <h4>For Tutors</h4>
+    <div class="policy-content">
+      <ul>
+        <li>Hide your identity until payment is made.</li>
+        <li>Do not share contact info with students before payment.</li>
+        <li>Accept 40% commission of first month fees.</li>
+        <li>Must be at least 13 years old.</li>
+      </ul>
     </div>
-  </header>
-
-  <!-- How it Works -->
-  <section id="how-it-works">
-    <h2>How It Works</h2>
-    <div class="container steps">
-      <div class="step">
-        <h3>Students</h3>
-        <p>Browse tutors → Demo class → Make payment → Connect via Discord</p>
-      </div>
-      <div class="step">
-        <h3>Tutors</h3>
-        <p>Apply → Get approved → Teach → Receive fees securely</p>
-      </div>
+  </div>
+  <div class="policy">
+    <h4>For Students</h4>
+    <div class="policy-content">
+      <ul>
+        <li>Pay 100% before connecting with tutor.</li>
+        <li>Do not share contact info before payment.</li>
+        <li>Fees held by Tutors Link first month, then transferred to tutor.</li>
+        <li>Prices per class fixed by tutor.</li>
+      </ul>
     </div>
-  </section>
-
-  <!-- Policies -->
-  <section id="policies">
-    <h2>Platform Policies</h2>
-    <div class="container">
-      <div class="policy">
-        <h4>For Tutors <span>+</span></h4>
-        <div class="policy-content">
-          <ul>
-            <li>Hide your identity until payment is made.</li>
-            <li>Do not share contact info with students before payment.</li>
-            <li>Accept 40% commission of first month fees.</li>
-            <li>Must be at least 13 years old.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="policy">
-        <h4>For Students <span>+</span></h4>
-        <div class="policy-content">
-          <ul>
-            <li>Pay 100% before connecting with tutor.</li>
-            <li>Do not share contact info before payment.</li>
-            <li>Fees held by Tutors Link first month, then transferred to tutor.</li>
-            <li>Prices per class fixed by tutor.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="policy">
-        <h4>General <span>+</span></h4>
-        <div class="policy-content">
-          <ul>
-            <li>Tutors Link is responsible for issues in the first month.</li>
-            <li>Not responsible for issues after first month.</li>
-            <li>Breaking policies can result in removal.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="policy">
-        <h4>Refunds <span>+</span></h4>
-        <div class="policy-content">
-          <ul>
-            <li>Refunds only in first month.</li>
-            <li>Case 1: After demo class, full refund if issues arise.</li>
-            <li>Case 2: During first week, refund for classes not attended or issues proven.</li>
-          </ul>
-        </div>
-      </div>
+  </div>
+  <div class="policy">
+    <h4>General</h4>
+    <div class="policy-content">
+      <ul>
+        <li>Tutors Link is responsible for issues in the first month.</li>
+        <li>Not responsible for issues after first month.</li>
+        <li>Breaking policies can result in removal.</li>
+      </ul>
     </div>
-  </section>
-
-  <!-- Reviews -->
-  <section id="reviews">
-    <h2>What Students Say</h2>
-    <div class="container reviews">
-      <div class="review">"Amazing tutors! Found the perfect one in minutes."</div>
-      <div class="review">"Secure payments, very reliable platform!"</div>
-      <div class="review">"Loved the demo class feature, totally stress-free."</div>
+  </div>
+  <div class="policy">
+    <h4>Refunds</h4>
+    <div class="policy-content">
+      <ul>
+        <li>Refunds only in first month.</li>
+        <li>Case 1: After demo class, full refund if issues arise.</li>
+        <li>Case 2: During first week, refund for classes not attended or issues proven.</li>
+      </ul>
     </div>
-  </section>
+  </div>
+</div>
+</section>
 
-  <!-- Find a Tutor -->
-  <section id="find-tutor">
-    <h2>Find a Tutor</h2>
-    <div class="container tutor-cards">
-      <div class="tutor-card">
-        <h3>Discord Tutors Channel</h3>
-        <p>Browse tutors directly on Discord.</p>
-        <a href="https://discord.com/channels/yourserver/find-tutor" target="_blank">Go to Channel</a>
-      </div>
-      <div class="tutor-card">
-        <h3>Instagram Tutors</h3>
-        <p>Check our Instagram posts for available tutors.</p>
-        <a href="https://instagram.com/yourprofile" target="_blank">Visit Instagram</a>
-      </div>
-      <div class="tutor-card">
-        <h3>TikTok Tutors</h3>
-        <p>See short videos of tutors explaining their specialties.</p>
-        <a href="https://tiktok.com/@yourprofile" target="_blank">Visit TikTok</a>
-      </div>
-    </div>
-  </section>
+<!-- Reviews -->
+<section id="reviews">
+<h2>What Students Say</h2>
+<div class="container reviews">
+  <div class="review">"Amazing tutors! Found the perfect one in minutes."</div>
+  <div class="review">"Secure payments, very reliable platform!"</div>
+  <div class="review">"Loved the demo class feature, totally stress-free."</div>
+</div>
+</section>
 
-  <!-- Apply as Tutor -->
-  <section id="apply" class="apply">
-    <h2>Apply as a Tutor</h2>
-    <p>Join our Discord server and DM the Tutors Link bot. Staff will guide you through the Google form application process.</p>
-    <a href="https://discord.com/invite/yourserver" target="_blank">Join Discord</a>
-  </section>
+<!-- Find a Tutor -->
+<section id="find-tutor">
+<h2>Find a Tutor</h2>
+<div class="container tutor-cards">
+  <div class="tutor-card">
+    <h3>Discord</h3>
+    <p>Connect with tutors directly through our server.</p>
+    <a href="https://discord.gg/pe8TXPgkAe" target="_blank">Join Discord</a>
+  </div>
+  <div class="tutor-card">
+    <h3>Instagram</h3>
+    <p>Check our posts for available tutors and tips.</p>
+    <a href="https://instagram.com/tutors.link" target="_blank">@tutors.link</a>
+  </div>
+  <div class="tutor-card">
+    <h3>TikTok</h3>
+    <p>Watch tutors explain subjects in short videos.</p>
+    <a href="https://tiktok.com/@tutors_link" target="_blank">@tutors_link</a>
+  </div>
+</div>
+</section>
 
-  <!-- Footer -->
-  <footer>
-    <p>Follow us on <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a> | <a href="https://tiktok.com/@yourprofile" target="_blank">TikTok</a></p>
-    <p>&copy; 2026 Tutors Link. All rights reserved.</p>
-  </footer>
+<!-- Apply as Tutor -->
+<section id="apply" class="apply">
+<h2>Apply as a Tutor</h2>
+<p>Join our Discord server and DM the Tutors Link bot. Staff will guide you through the Google form application process.</p>
+<a href="https://discord.gg/pe8TXPgkAe" target="_blank">Join Discord</a>
+</section>
 
-  <!-- JS for collapsible policies -->
-  <script>
-    const policies = document.querySelectorAll('.policy h4');
-    policies.forEach(policy => {
-      policy.addEventListener('click', () => {
-        const content = policy.nextElementSibling;
-        const isVisible = content.style.display === 'block';
-        content.style.display = isVisible ? 'none' : 'block';
-        policy.querySelector('span').textContent = isVisible ? '+' : '−';
-      });
-    });
-  </script>
+<!-- Footer -->
+<footer>
+<p>Follow us on <a href="https://instagram.com/tutors.link" target="_blank">Instagram</a> | <a href="https://tiktok.com/@tutors_link" target="_blank">TikTok</a></p>
+<p>&copy; 2026 Tutors Link. All rights reserved.</p>
+</footer>
+
+<script>
+// Expand policy by clicking anywhere
+const policies = document.querySelectorAll('.policy');
+policies.forEach(policy => {
+  policy.addEventListener('click', () => {
+    const content = policy.querySelector('.policy-content');
+    const isVisible = content.style.display === 'block';
+    content.style.display = isVisible ? 'none' : 'block';
+  });
+});
+</script>
 
 </body>
 </html>
