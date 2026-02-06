@@ -221,9 +221,9 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 // Configuration - Update this URL to your Railway backend URL after deployment
 // For local development: http://localhost:3000
 // For production: https://your-app.railway.app
-const API_BASE_URL = 'tutorslink.up.railway.app'
+const API_BASE_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:3000' 
-  : 'https://your-backend-url.railway.app'; // Update this after Railway deployment
+  : 'https://tutorslink.up.railway.app';
 
 // ============================================
 // Utility Functions
