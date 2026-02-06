@@ -1,0 +1,24 @@
+{
+  "name": "tutors-link",
+  "version": "1.0.0",
+  "description": "Tutors Link - Connect with tutors worldwide",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "tutoring",
+    "education",
+    "learning"
+  ],
+  "author": "Tutors Link",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.9.5",
+    "node-fetch": "^2.7.0"
+  }
+}

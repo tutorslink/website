@@ -175,12 +175,12 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 <section id="staff-portal">
 <h2>Staff Portal - Add Tutor</h2>
 <form id="add-tutor-form">
-  <input type="text" placeholder="Tutor Name" required>
-  <input type="text" placeholder="Subjects" required>
-  <input type="text" placeholder="Price per class" required>
-  <input type="text" placeholder="Time Zone" required>
-  <input type="text" placeholder="Languages" required>
-  <select required>
+  <input type="text" name="name" placeholder="Tutor Name" required>
+  <input type="text" name="subjects" placeholder="Subjects" required>
+  <input type="text" name="price" placeholder="Price per class" required>
+  <input type="text" name="timezone" placeholder="Time Zone" required>
+  <input type="text" name="languages" placeholder="Languages" required>
+  <select name="category" required>
     <option value="">Select Category</option>
     <option>IGCSE</option>
     <option>AS/A Levels</option>
@@ -197,9 +197,9 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 <section id="support">
 <h2>Student Support</h2>
 <form id="support-form">
-  <input type="text" placeholder="Your Name" required>
-  <input type="email" placeholder="Your Email" required>
-  <textarea placeholder="Your Question" rows="4" required></textarea>
+  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="email" name="email" placeholder="Your Email" required>
+  <textarea name="message" placeholder="Your Question" rows="4" required></textarea>
   <button type="submit">Send Message</button>
 </form>
 </section>
@@ -218,7 +218,43 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 </footer>
 
 <script>
-// Policies expand on click anywhere
+// Configuration - Update this URL to your Railway backend URL after deployment
+// For local development: http://localhost:3000
+// For production: https://your-app.railway.app
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3000' 
+  : 'https://your-backend-url.railway.app'; // Update this after Railway deployment
+
+// ============================================
+// Utility Functions
+// ============================================
+
+// Show loading state
+function showLoading(button) {
+  button.disabled = true;
+  button.dataset.originalText = button.textContent;
+  button.textContent = 'Loading...';
+}
+
+// Hide loading state
+function hideLoading(button) {
+  button.disabled = false;
+  button.textContent = button.dataset.originalText;
+}
+
+// Show success message
+function showSuccess(message) {
+  alert('✅ ' + message);
+}
+
+// Show error message
+function showError(message) {
+  alert('❌ ' + message);
+}
+
+// ============================================
+// Policy Expansion
+// ============================================
 document.querySelectorAll('.policy').forEach(policy => {
   policy.addEventListener('click', () => {
     const content = policy.querySelector('.policy-content');
@@ -226,37 +262,268 @@ document.querySelectorAll('.policy').forEach(policy => {
   });
 });
 
-// Tutor form submission
+// ============================================
+// Fetch and Display Tutors on Page Load
+// ============================================
+async function fetchTutors() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/tutors`);
+    const result = await response.json();
+    
+    if (result.success && result.data.length > 0) {
+      displayTutors(result.data);
+    }
+  } catch (error) {
+    console.error('Error fetching tutors:', error);
+    // Silently fail - don't show error to user on page load
+  }
+}
+
+// Display tutors in the staff portal section
+function displayTutors(tutors) {
+  const tutorList = document.getElementById('tutor-list');
+  tutorList.innerHTML = ''; // Clear existing tutors
+  
+  tutors.forEach(tutor => {
+    // Create tutor box element safely
+    const tutorBox = document.createElement('div');
+    tutorBox.className = 'tutor-box';
+    tutorBox.dataset.tutorId = tutor._id;
+    
+    // Create and append elements with proper text content (no XSS)
+    const nameHeader = document.createElement('h4');
+    nameHeader.textContent = tutor.name;
+    
+    const subjectsP = document.createElement('p');
+    subjectsP.textContent = `Subjects: ${tutor.subjects}`;
+    
+    const priceP = document.createElement('p');
+    priceP.textContent = `Price: ${tutor.price}`;
+    
+    const timezoneP = document.createElement('p');
+    timezoneP.textContent = `Time Zone: ${tutor.timezone}`;
+    
+    const languagesP = document.createElement('p');
+    languagesP.textContent = `Languages: ${tutor.languages}`;
+    
+    const categoryP = document.createElement('p');
+    categoryP.textContent = `Category: ${tutor.category}`;
+    
+    const statusP = document.createElement('p');
+    statusP.textContent = `Status: ${tutor.availability}`;
+    
+    // Create button with event listener (no inline onclick)
+    const bookButton = document.createElement('button');
+    bookButton.textContent = 'Book a Demo';
+    bookButton.style.cssText = 'background:#ff0; color:#000; padding:8px 15px; border-radius:8px; margin-top:10px; cursor:pointer; border:none; font-weight:700;';
+    bookButton.addEventListener('click', () => openBookingModal(tutor._id, tutor.name));
+    
+    // Append all elements
+    tutorBox.appendChild(nameHeader);
+    tutorBox.appendChild(subjectsP);
+    tutorBox.appendChild(priceP);
+    tutorBox.appendChild(timezoneP);
+    tutorBox.appendChild(languagesP);
+    tutorBox.appendChild(categoryP);
+    tutorBox.appendChild(statusP);
+    tutorBox.appendChild(bookButton);
+    
+    tutorList.appendChild(tutorBox);
+  });
+}
+
+// Load tutors when page loads
+window.addEventListener('DOMContentLoaded', fetchTutors);
+
+// ============================================
+// Add Tutor Form (Staff Portal)
+// ============================================
 const tutorForm = document.getElementById('add-tutor-form');
-const tutorList = document.getElementById('tutor-list');
-tutorForm.addEventListener('submit', e => {
+tutorForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const data = new FormData(tutorForm);
-  const tutorHTML = `<div class="tutor-box">
-    <h4>${data.get('0')}</h4>
-    <p>Subjects: ${data.get('1')}</p>
-    <p>Price: ${data.get('2')}</p>
-    <p>Time Zone: ${data.get('3')}</p>
-    <p>Languages: ${data.get('4')}</p>
-    <p>Category: ${data.get('5')}</p>
-  </div>`;
-  tutorList.insertAdjacentHTML('beforeend', tutorHTML);
-  tutorForm.reset();
+  
+  const submitButton = tutorForm.querySelector('button[type="submit"]');
+  showLoading(submitButton);
+  
+  // Get form data
+  const formData = new FormData(tutorForm);
+  const tutorData = {
+    name: formData.get('name'),
+    subjects: formData.get('subjects'),
+    price: formData.get('price'),
+    timezone: formData.get('timezone'),
+    languages: formData.get('languages'),
+    category: formData.get('category')
+  };
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/tutors`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(tutorData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showSuccess('Tutor added successfully!');
+      tutorForm.reset();
+      // Refresh tutor list
+      fetchTutors();
+    } else {
+      showError(result.message || 'Failed to add tutor');
+    }
+  } catch (error) {
+    console.error('Error adding tutor:', error);
+    showError('Network error. Please check your connection.');
+  } finally {
+    hideLoading(submitButton);
+  }
 });
 
-// Discord webhook for student support
+// ============================================
+// Support Form
+// ============================================
 const supportForm = document.getElementById('support-form');
-supportForm.addEventListener('submit', e => {
+supportForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const data = new FormData(supportForm);
-  // Replace YOUR_DISCORD_WEBHOOK_URL with your actual webhook URL
-  fetch('YOUR_DISCORD_WEBHOOK_URL', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({content:`New support message:\nName: ${data.get('0')}\nEmail: ${data.get('1')}\nQuestion: ${data.get('2')}`})
-  });
-  alert('Message sent to staff Discord!');
-  supportForm.reset();
+  
+  const submitButton = supportForm.querySelector('button[type="submit"]');
+  showLoading(submitButton);
+  
+  // Get form data
+  const formData = new FormData(supportForm);
+  const supportData = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    message: formData.get('message')
+  };
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/support`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(supportData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showSuccess('Message sent to staff! We will get back to you soon.');
+      supportForm.reset();
+    } else {
+      showError(result.message || 'Failed to send message');
+    }
+  } catch (error) {
+    console.error('Error sending support message:', error);
+    showError('Network error. Please check your connection.');
+  } finally {
+    hideLoading(submitButton);
+  }
+});
+
+// ============================================
+// Booking Modal and Functionality
+// ============================================
+
+// Create booking modal dynamically
+function createBookingModal() {
+  const modalHTML = `
+    <div id="booking-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+      <div style="background:#111; padding:40px; border-radius:20px; max-width:500px; width:90%; box-shadow:0 0 30px #ff00ff;">
+        <h2 style="margin-bottom:20px; text-align:center;">Book a Demo Class</h2>
+        <form id="booking-form">
+          <input type="text" id="student-name" placeholder="Your Name" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:none;">
+          <input type="email" id="student-email" placeholder="Your Email" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:none;">
+          <textarea id="booking-message" placeholder="Tell us about your learning goals (optional)" rows="4" style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:none;"></textarea>
+          <input type="hidden" id="selected-tutor-id">
+          <div style="display:flex; gap:10px;">
+            <button type="submit" style="flex:1; background:#ff0; color:#000; padding:12px; border-radius:8px; border:none; font-weight:700; cursor:pointer;">Submit Request</button>
+            <button type="button" onclick="closeBookingModal()" style="flex:1; background:#666; color:#fff; padding:12px; border-radius:8px; border:none; font-weight:700; cursor:pointer;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Add booking form submit handler
+  const bookingForm = document.getElementById('booking-form');
+  bookingForm.addEventListener('submit', handleBookingSubmit);
+}
+
+// Open booking modal
+function openBookingModal(tutorId, tutorName) {
+  const modal = document.getElementById('booking-modal');
+  if (!modal) {
+    createBookingModal();
+  }
+  
+  document.getElementById('selected-tutor-id').value = tutorId;
+  const modalElement = document.getElementById('booking-modal');
+  modalElement.style.display = 'flex';
+  
+  // Update modal title with tutor name (safely using textContent)
+  const modalTitle = modalElement.querySelector('h2');
+  modalTitle.textContent = `Book a Demo with ${tutorName}`;
+}
+
+// Close booking modal
+function closeBookingModal() {
+  const modal = document.getElementById('booking-modal');
+  modal.style.display = 'none';
+  document.getElementById('booking-form').reset();
+}
+
+// Handle booking form submission
+async function handleBookingSubmit(e) {
+  e.preventDefault();
+  
+  const submitButton = e.target.querySelector('button[type="submit"]');
+  showLoading(submitButton);
+  
+  const bookingData = {
+    studentName: document.getElementById('student-name').value,
+    studentEmail: document.getElementById('student-email').value,
+    tutorId: document.getElementById('selected-tutor-id').value,
+    message: document.getElementById('booking-message').value
+  };
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bookingData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showSuccess('Booking request submitted! Our team will contact you soon.');
+      closeBookingModal();
+    } else {
+      showError(result.message || 'Failed to submit booking');
+    }
+  } catch (error) {
+    console.error('Error submitting booking:', error);
+    showError('Network error. Please check your connection.');
+  } finally {
+    hideLoading(submitButton);
+  }
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('booking-modal');
+  if (modal && e.target === modal) {
+    closeBookingModal();
+  }
 });
 </script>
 </body>
