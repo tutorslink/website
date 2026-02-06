@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 // Initialize Express app
 const app = express();
@@ -11,15 +12,17 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors()); // Allow cross-origin requests from GitHub Pages
 app.use(express.json()); // Parse JSON request bodies
-app.use(express.static('.')); // Serve static files (index.html)
+
+// Serve static files only in development
+// In production, the frontend will be hosted on GitHub Pages separately
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static('.'));
+}
 
 // ============================================
 // MongoDB Connection
 // ============================================
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ Connected to MongoDB Atlas'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
@@ -129,6 +132,8 @@ const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
 // ============================================
 
 // GET /api/tutors - Fetch all tutors
+// Note: Consider adding rate limiting in production (e.g., express-rate-limit)
+// to prevent abuse of this endpoint
 app.get('/api/tutors', async (req, res) => {
   try {
     const tutors = await Tutor.find().sort({ createdAt: -1 });
@@ -236,6 +241,8 @@ app.post('/api/bookings', async (req, res) => {
 });
 
 // POST /api/support - Save support message and trigger Discord webhook
+// Note: Consider adding rate limiting in production (e.g., express-rate-limit)
+// to prevent spam and abuse of the support form
 app.post('/api/support', async (req, res) => {
   try {
     const { name, email, message } = req.body;

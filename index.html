@@ -175,12 +175,12 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 <section id="staff-portal">
 <h2>Staff Portal - Add Tutor</h2>
 <form id="add-tutor-form">
-  <input type="text" name="0" placeholder="Tutor Name" required>
-  <input type="text" name="1" placeholder="Subjects" required>
-  <input type="text" name="2" placeholder="Price per class" required>
-  <input type="text" name="3" placeholder="Time Zone" required>
-  <input type="text" name="4" placeholder="Languages" required>
-  <select name="5" required>
+  <input type="text" name="name" placeholder="Tutor Name" required>
+  <input type="text" name="subjects" placeholder="Subjects" required>
+  <input type="text" name="price" placeholder="Price per class" required>
+  <input type="text" name="timezone" placeholder="Time Zone" required>
+  <input type="text" name="languages" placeholder="Languages" required>
+  <select name="category" required>
     <option value="">Select Category</option>
     <option>IGCSE</option>
     <option>AS/A Levels</option>
@@ -197,9 +197,9 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 <section id="support">
 <h2>Student Support</h2>
 <form id="support-form">
-  <input type="text" name="0" placeholder="Your Name" required>
-  <input type="email" name="1" placeholder="Your Email" required>
-  <textarea name="2" placeholder="Your Question" rows="4" required></textarea>
+  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="email" name="email" placeholder="Your Email" required>
+  <textarea name="message" placeholder="Your Question" rows="4" required></textarea>
   <button type="submit">Send Message</button>
 </form>
 </section>
@@ -285,17 +285,50 @@ function displayTutors(tutors) {
   tutorList.innerHTML = ''; // Clear existing tutors
   
   tutors.forEach(tutor => {
-    const tutorHTML = `<div class="tutor-box" data-tutor-id="${tutor._id}">
-      <h4>${tutor.name}</h4>
-      <p>Subjects: ${tutor.subjects}</p>
-      <p>Price: ${tutor.price}</p>
-      <p>Time Zone: ${tutor.timezone}</p>
-      <p>Languages: ${tutor.languages}</p>
-      <p>Category: ${tutor.category}</p>
-      <p>Status: ${tutor.availability}</p>
-      <button onclick="openBookingModal('${tutor._id}', '${tutor.name}')" style="background:#ff0; color:#000; padding:8px 15px; border-radius:8px; margin-top:10px; cursor:pointer; border:none; font-weight:700;">Book a Demo</button>
-    </div>`;
-    tutorList.insertAdjacentHTML('beforeend', tutorHTML);
+    // Create tutor box element safely
+    const tutorBox = document.createElement('div');
+    tutorBox.className = 'tutor-box';
+    tutorBox.dataset.tutorId = tutor._id;
+    
+    // Create and append elements with proper text content (no XSS)
+    const nameHeader = document.createElement('h4');
+    nameHeader.textContent = tutor.name;
+    
+    const subjectsP = document.createElement('p');
+    subjectsP.textContent = `Subjects: ${tutor.subjects}`;
+    
+    const priceP = document.createElement('p');
+    priceP.textContent = `Price: ${tutor.price}`;
+    
+    const timezoneP = document.createElement('p');
+    timezoneP.textContent = `Time Zone: ${tutor.timezone}`;
+    
+    const languagesP = document.createElement('p');
+    languagesP.textContent = `Languages: ${tutor.languages}`;
+    
+    const categoryP = document.createElement('p');
+    categoryP.textContent = `Category: ${tutor.category}`;
+    
+    const statusP = document.createElement('p');
+    statusP.textContent = `Status: ${tutor.availability}`;
+    
+    // Create button with event listener (no inline onclick)
+    const bookButton = document.createElement('button');
+    bookButton.textContent = 'Book a Demo';
+    bookButton.style.cssText = 'background:#ff0; color:#000; padding:8px 15px; border-radius:8px; margin-top:10px; cursor:pointer; border:none; font-weight:700;';
+    bookButton.addEventListener('click', () => openBookingModal(tutor._id, tutor.name));
+    
+    // Append all elements
+    tutorBox.appendChild(nameHeader);
+    tutorBox.appendChild(subjectsP);
+    tutorBox.appendChild(priceP);
+    tutorBox.appendChild(timezoneP);
+    tutorBox.appendChild(languagesP);
+    tutorBox.appendChild(categoryP);
+    tutorBox.appendChild(statusP);
+    tutorBox.appendChild(bookButton);
+    
+    tutorList.appendChild(tutorBox);
   });
 }
 
@@ -315,12 +348,12 @@ tutorForm.addEventListener('submit', async (e) => {
   // Get form data
   const formData = new FormData(tutorForm);
   const tutorData = {
-    name: formData.get('0'),
-    subjects: formData.get('1'),
-    price: formData.get('2'),
-    timezone: formData.get('3'),
-    languages: formData.get('4'),
-    category: formData.get('5')
+    name: formData.get('name'),
+    subjects: formData.get('subjects'),
+    price: formData.get('price'),
+    timezone: formData.get('timezone'),
+    languages: formData.get('languages'),
+    category: formData.get('category')
   };
   
   try {
@@ -363,9 +396,9 @@ supportForm.addEventListener('submit', async (e) => {
   // Get form data
   const formData = new FormData(supportForm);
   const supportData = {
-    name: formData.get('0'),
-    email: formData.get('1'),
-    message: formData.get('2')
+    name: formData.get('name'),
+    email: formData.get('email'),
+    message: formData.get('message')
   };
   
   try {
@@ -434,8 +467,9 @@ function openBookingModal(tutorId, tutorName) {
   const modalElement = document.getElementById('booking-modal');
   modalElement.style.display = 'flex';
   
-  // Update modal title with tutor name
-  modalElement.querySelector('h2').textContent = `Book a Demo with ${tutorName}`;
+  // Update modal title with tutor name (safely using textContent)
+  const modalTitle = modalElement.querySelector('h2');
+  modalTitle.textContent = `Book a Demo with ${tutorName}`;
 }
 
 // Close booking modal
