@@ -302,7 +302,7 @@ app.post('/api/support', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running',
+    message: 'Server is running,healthy',
     timestamp: new Date().toISOString()
   });
 });
