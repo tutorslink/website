@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
 
 // Initialize Express app
 const app = express();
@@ -309,7 +311,7 @@ app.post('/api/support', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running,healthy',
+    message: 'Server is running, healthy',
     timestamp: new Date().toISOString(),
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
@@ -318,13 +320,12 @@ app.get('/api/health', (req, res) => {
 // Root endpoint for quick verification
 app.get('/', (req, res) => {
   // Check if index.html exists, if not provide a simple response
-  const fs = require('fs');
-  const path = require('path');
   const indexPath = path.join(__dirname, 'index.html');
   
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
+    const isDbConnected = mongoose.connection.readyState === 1;
     res.send(`
       <!DOCTYPE html>
       <html>
@@ -343,9 +344,9 @@ app.get('/', (req, res) => {
         <div class="status success">
           <strong>✅ Server Status:</strong> Running
         </div>
-        <div class="status ${mongoose.connection.readyState === 1 ? 'success' : 'warning'}">
-          <strong>${mongoose.connection.readyState === 1 ? '✅' : '⚠️'} Database:</strong> 
-          ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}
+        <div class="status ${isDbConnected ? 'success' : 'warning'}">
+          <strong>${isDbConnected ? '✅' : '⚠️'} Database:</strong> 
+          ${isDbConnected ? 'Connected' : 'Disconnected'}
         </div>
         <h2>Available Endpoints:</h2>
         <ul>
