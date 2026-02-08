@@ -60,12 +60,22 @@ if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASSWO
 // ============================================
 // Encryption Utilities
 // ============================================
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-key-please-change-this!!';
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const ALGORITHM = 'aes-256-cbc';
+// Generate a unique salt for this application (in production, use a securely stored value)
+const APP_SALT = process.env.ENCRYPTION_SALT || 'tutorslink-secure-salt-2026';
+
+if (!ENCRYPTION_KEY) {
+  console.warn('⚠️  ENCRYPTION_KEY not set. Data will be stored without encryption.');
+  console.warn('⚠️  Please set ENCRYPTION_KEY in .env for production use.');
+}
 
 function encrypt(text) {
+  if (!ENCRYPTION_KEY) {
+    return text; // Return unencrypted if key not set
+  }
   const iv = crypto.randomBytes(16);
-  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const key = crypto.scryptSync(ENCRYPTION_KEY, APP_SALT, 32);
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
   let encrypted = cipher.update(text, 'utf8', 'hex');
   encrypted += cipher.final('hex');
@@ -73,10 +83,13 @@ function encrypt(text) {
 }
 
 function decrypt(encryptedText) {
+  if (!ENCRYPTION_KEY) {
+    return encryptedText; // Return as-is if key not set
+  }
   const parts = encryptedText.split(':');
   const iv = Buffer.from(parts[0], 'hex');
   const encrypted = parts[1];
-  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const key = crypto.scryptSync(ENCRYPTION_KEY, APP_SALT, 32);
   const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
@@ -259,7 +272,7 @@ const tutorApplicationSchema = new mongoose.Schema({
   highestQualification: {
     type: String,
     required: true,
-    enum: ['High School / IGCSE / O Levels', 'A Levels / AS Levels', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD / Doctorate']
+    enum: ['High School / IGCSE / O Levels', 'A Levels / AS Levels', 'Bachelors Degree', 'Masters Degree', 'PhD / Doctorate']
   },
   qualificationDocumentLink: {
     type: String,
@@ -595,7 +608,7 @@ app.post('/api/tutor-applications', async (req, res) => {
               { name: 'Format', value: applicationData.teachingFormat, inline: true },
               { name: 'Country', value: applicationData.country, inline: true },
               { name: 'Qualification', value: applicationData.highestQualification, inline: false },
-              { name: 'Bio', value: applicationData.professionalBio.substring(0, 200), inline: false },
+              { name: 'Bio', value: applicationData.professionalBio.length > 200 ? applicationData.professionalBio.substring(0, 197) + '...' : applicationData.professionalBio, inline: false },
               { name: 'Qualification Doc', value: `[View](${applicationData.qualificationDocumentLink})`, inline: true },
               { name: 'Teaching Video', value: `[Watch](${applicationData.teachingVideoLink})`, inline: true },
               { name: 'Academic Results', value: `[View](${applicationData.academicResultsLink})`, inline: true }
