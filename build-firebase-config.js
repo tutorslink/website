@@ -68,12 +68,16 @@ const firebaseConfig = {
   appId: "${firebaseConfig.appId}"
 };
 
-// Validate configuration
-const isConfigured = !firebaseConfig.apiKey.startsWith('YOUR_');
+// Validate configuration - check all fields, not just API key
+const isConfigured = !Object.values(firebaseConfig).some(value => 
+  typeof value === 'string' && value.startsWith('YOUR_')
+);
 
 if (!isConfigured) {
-  console.warn('⚠️ Firebase is not configured. Please set up your Firebase credentials.');
-  console.warn('   See FIREBASE_SETUP.md for instructions.');
+  console.error('❌ Firebase is not configured!');
+  console.error('   Authentication will not work until you configure Firebase.');
+  console.error('   Please update firebase-config.js with your actual Firebase credentials.');
+  console.error('   See FIREBASE_SETUP.md for step-by-step instructions.');
 }
 
 // Initialize Firebase

@@ -28,8 +28,10 @@ const firebaseConfig = {
   appId: "YOUR_APP_ID"
 };
 
-// Validate configuration
-const isConfigured = !firebaseConfig.apiKey.startsWith('YOUR_');
+// Validate configuration - check all fields, not just API key
+const isConfigured = !Object.values(firebaseConfig).some(value => 
+  typeof value === 'string' && value.startsWith('YOUR_')
+);
 
 if (!isConfigured) {
   console.error('❌ Firebase is not configured!');
