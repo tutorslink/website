@@ -6,6 +6,8 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // Initialize Express app
 const app = express();
@@ -33,6 +35,52 @@ if (process.env.MONGODB_URI) {
 } else {
   console.warn('⚠️  MONGODB_URI not set. Server running without database connection.');
   console.warn('⚠️  Database-dependent API routes will fail until MONGODB_URI is configured.');
+}
+
+// ============================================
+// Email Configuration
+// ============================================
+let emailTransporter = null;
+
+if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+  emailTransporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT) || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+  console.log('✅ Email transporter configured');
+} else {
+  console.warn('⚠️  Email not configured. Email notifications will be skipped.');
+}
+
+// ============================================
+// Encryption Utilities
+// ============================================
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-key-please-change-this!!';
+const ALGORITHM = 'aes-256-cbc';
+
+function encrypt(text) {
+  const iv = crypto.randomBytes(16);
+  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return iv.toString('hex') + ':' + encrypted;
+}
+
+function decrypt(encryptedText) {
+  const parts = encryptedText.split(':');
+  const iv = Buffer.from(parts[0], 'hex');
+  const encrypted = parts[1];
+  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 }
 
 // ============================================
@@ -131,10 +179,125 @@ const supportMessageSchema = new mongoose.Schema({
   }
 });
 
+// Tutor Application Schema
+const tutorApplicationSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  discordUsername: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  subject: {
+    type: String,
+    required: true
+  },
+  subjectCode: {
+    type: String,
+    required: true
+  },
+  examinationBoard: {
+    type: String,
+    required: true
+  },
+  academicResult: {
+    type: String,
+    required: true
+  },
+  teachingLevel: {
+    type: String,
+    required: true
+  },
+  teachingExperience: {
+    type: String,
+    required: true
+  },
+  languagesSpoken: {
+    type: String,
+    required: true
+  },
+  country: {
+    type: String,
+    required: true
+  },
+  reference: {
+    type: String,
+    required: true
+  },
+  teachingFormat: {
+    type: String,
+    required: true,
+    enum: ['One-on-one', 'Group classes', 'Both']
+  },
+  oneOnOneRate: {
+    type: String,
+    required: true
+  },
+  groupClassRate: {
+    type: String,
+    required: true
+  },
+  groupClassSize: {
+    type: String,
+    required: true
+  },
+  classesPerWeekMonth: {
+    type: String,
+    required: true
+  },
+  classDuration: {
+    type: String,
+    required: true
+  },
+  highestQualification: {
+    type: String,
+    required: true,
+    enum: ['High School / IGCSE / O Levels', 'A Levels / AS Levels', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD / Doctorate']
+  },
+  qualificationDocumentLink: {
+    type: String,
+    required: true
+  },
+  teachingVideoLink: {
+    type: String,
+    required: true
+  },
+  academicResultsLink: {
+    type: String,
+    required: true
+  },
+  professionalBio: {
+    type: String,
+    required: true,
+    maxlength: 500
+  },
+  agreeToTerms: {
+    type: Boolean,
+    required: true
+  },
+  status: {
+    type: String,
+    default: 'pending',
+    enum: ['pending', 'approved', 'rejected']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 // Create models from schemas
 const Tutor = mongoose.model('Tutor', tutorSchema);
 const Booking = mongoose.model('Booking', bookingSchema);
 const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
+const TutorApplication = mongoose.model('TutorApplication', tutorApplicationSchema);
 
 // ============================================
 // API Routes
@@ -302,6 +465,164 @@ app.post('/api/support', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to send support message',
+      error: error.message
+    });
+  }
+});
+
+// POST /api/tutor-applications - Submit tutor application
+app.post('/api/tutor-applications', async (req, res) => {
+  try {
+    const applicationData = req.body;
+    
+    // Validate required fields
+    const requiredFields = [
+      'userId', 'email', 'discordUsername', 'subject', 'subjectCode',
+      'examinationBoard', 'academicResult', 'teachingLevel', 'teachingExperience',
+      'languagesSpoken', 'country', 'reference', 'teachingFormat',
+      'oneOnOneRate', 'groupClassRate', 'groupClassSize', 'classesPerWeekMonth',
+      'classDuration', 'highestQualification', 'qualificationDocumentLink',
+      'teachingVideoLink', 'academicResultsLink', 'professionalBio', 'agreeToTerms'
+    ];
+    
+    const missingFields = requiredFields.filter(field => !applicationData[field]);
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${missingFields.join(', ')}`
+      });
+    }
+
+    // Validate terms agreement
+    if (applicationData.agreeToTerms !== true) {
+      return res.status(400).json({
+        success: false,
+        message: 'You must agree to the Tutors Link commission terms'
+      });
+    }
+
+    // Create new application
+    const newApplication = new TutorApplication({
+      ...applicationData,
+      status: 'pending'
+    });
+
+    await newApplication.save();
+
+    // Send confirmation email to applicant
+    if (emailTransporter) {
+      try {
+        await emailTransporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: applicationData.email,
+          subject: 'Tutor Application Received - Tutors Link',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #ff00ff;">Thank You for Applying to Tutors Link!</h2>
+              <p>Dear Applicant,</p>
+              <p>We have successfully received your tutor application for <strong>${applicationData.subject}</strong>.</p>
+              <p>Our team will review your application and get back to you within 3-5 business days.</p>
+              <h3>Application Summary:</h3>
+              <ul>
+                <li><strong>Subject:</strong> ${applicationData.subject} (${applicationData.subjectCode})</li>
+                <li><strong>Teaching Level:</strong> ${applicationData.teachingLevel}</li>
+                <li><strong>Teaching Format:</strong> ${applicationData.teachingFormat}</li>
+                <li><strong>Submitted:</strong> ${new Date().toLocaleString()}</li>
+              </ul>
+              <p>If you have any questions, feel free to reach out to us on Discord or Instagram.</p>
+              <p style="margin-top: 30px;">Best regards,<br><strong>Tutors Link Team</strong></p>
+            </div>
+          `
+        });
+      } catch (emailError) {
+        console.error('Error sending applicant email:', emailError);
+      }
+    }
+
+    // Send notification email to staff
+    if (emailTransporter && process.env.STAFF_EMAIL) {
+      try {
+        await emailTransporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: process.env.STAFF_EMAIL,
+          subject: `New Tutor Application - ${applicationData.subject}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #ff00ff;">🎓 New Tutor Application</h2>
+              <p><strong>Email:</strong> ${applicationData.email}</p>
+              <p><strong>Discord:</strong> ${applicationData.discordUsername}</p>
+              <p><strong>Subject:</strong> ${applicationData.subject} (${applicationData.subjectCode})</p>
+              <p><strong>Board:</strong> ${applicationData.examinationBoard}</p>
+              <p><strong>Level:</strong> ${applicationData.teachingLevel}</p>
+              <p><strong>Academic Result:</strong> ${applicationData.academicResult}</p>
+              <p><strong>Teaching Format:</strong> ${applicationData.teachingFormat}</p>
+              <p><strong>Country:</strong> ${applicationData.country}</p>
+              <p><strong>Languages:</strong> ${applicationData.languagesSpoken}</p>
+              <p><strong>Qualification:</strong> ${applicationData.highestQualification}</p>
+              <hr>
+              <p><strong>Professional Bio:</strong></p>
+              <p>${applicationData.professionalBio}</p>
+              <hr>
+              <p><strong>Links:</strong></p>
+              <ul>
+                <li><a href="${applicationData.qualificationDocumentLink}">Qualification Document</a></li>
+                <li><a href="${applicationData.teachingVideoLink}">Teaching Video</a></li>
+                <li><a href="${applicationData.academicResultsLink}">Academic Results</a></li>
+              </ul>
+              <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+            </div>
+          `
+        });
+      } catch (emailError) {
+        console.error('Error sending staff email:', emailError);
+      }
+    }
+
+    // Send Discord notification
+    if (process.env.DISCORD_WEBHOOK_URL) {
+      try {
+        const discordMessage = {
+          embeds: [{
+            title: '🎓 New Tutor Application',
+            color: 0xff00ff,
+            fields: [
+              { name: 'Email', value: applicationData.email, inline: true },
+              { name: 'Discord', value: applicationData.discordUsername, inline: true },
+              { name: 'Subject', value: `${applicationData.subject} (${applicationData.subjectCode})`, inline: false },
+              { name: 'Board', value: applicationData.examinationBoard, inline: true },
+              { name: 'Level', value: applicationData.teachingLevel, inline: true },
+              { name: 'Result', value: applicationData.academicResult, inline: true },
+              { name: 'Format', value: applicationData.teachingFormat, inline: true },
+              { name: 'Country', value: applicationData.country, inline: true },
+              { name: 'Qualification', value: applicationData.highestQualification, inline: false },
+              { name: 'Bio', value: applicationData.professionalBio.substring(0, 200), inline: false },
+              { name: 'Qualification Doc', value: `[View](${applicationData.qualificationDocumentLink})`, inline: true },
+              { name: 'Teaching Video', value: `[Watch](${applicationData.teachingVideoLink})`, inline: true },
+              { name: 'Academic Results', value: `[View](${applicationData.academicResultsLink})`, inline: true }
+            ],
+            timestamp: new Date().toISOString()
+          }]
+        };
+
+        await fetch(process.env.DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(discordMessage)
+        });
+      } catch (webhookError) {
+        console.error('Discord webhook error:', webhookError);
+      }
+    }
+    
+    res.status(201).json({
+      success: true,
+      message: 'Application submitted successfully! Check your email for confirmation.'
+    });
+  } catch (error) {
+    console.error('Error submitting tutor application:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to submit application',
       error: error.message
     });
   }

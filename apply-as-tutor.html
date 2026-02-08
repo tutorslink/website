@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply as Tutor - Tutors Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
+body {background:#000; color:#fff; overflow-x:hidden; padding:20px;}
+.container {max-width:800px; margin:0 auto; padding:40px 20px;}
+
+header {
+  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  text-align:center;
+  padding:60px 20px;
+  border-radius:20px;
+  margin-bottom:40px;
+}
+header h1 {font-size:2.5rem; margin-bottom:10px;}
+header p {font-size:1.1rem; opacity:0.9;}
+
+.form-container {
+  background:#111;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 0 30px #ff00ff33;
+}
+
+.form-section {
+  margin-bottom:30px;
+}
+
+.form-section h2 {
+  font-size:1.5rem;
+  margin-bottom:20px;
+  color:#ff0;
+  border-bottom:2px solid #ff00ff;
+  padding-bottom:10px;
+}
+
+.form-group {
+  margin-bottom:20px;
+}
+
+label {
+  display:block;
+  margin-bottom:8px;
+  font-weight:600;
+  color:#eee;
+}
+
+label .required {
+  color:#ff0;
+  margin-left:3px;
+}
+
+input, select, textarea {
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:2px solid #333;
+  background:#222;
+  color:#fff;
+  font-size:1rem;
+  transition:0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline:none;
+  border-color:#ff00ff;
+  box-shadow:0 0 10px #ff00ff44;
+}
+
+textarea {
+  min-height:100px;
+  resize:vertical;
+}
+
+.radio-group {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.radio-option {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.radio-option input[type="radio"] {
+  width:auto;
+  margin:0;
+}
+
+button {
+  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  color:#fff;
+  padding:15px 40px;
+  border:none;
+  border-radius:10px;
+  font-size:1.1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.3s;
+  width:100%;
+  margin-top:20px;
+}
+
+button:hover {
+  transform:translateY(-2px);
+  box-shadow:0 5px 20px #ff00ff88;
+}
+
+button:disabled {
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.info-box {
+  background:#222;
+  padding:15px;
+  border-radius:8px;
+  border-left:4px solid #ff0;
+  margin-bottom:20px;
+  font-size:0.9rem;
+  color:#ddd;
+}
+
+.auth-required {
+  background:#ff000022;
+  border:2px solid #ff0000;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.auth-required h3 {
+  color:#ff0000;
+  margin-bottom:10px;
+}
+
+.auth-required button {
+  background:#ff0000;
+  width:auto;
+  margin:10px 5px 0;
+}
+
+.success-message {
+  background:#00ff0022;
+  border:2px solid #00ff00;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  display:none;
+}
+
+.success-message h2 {
+  color:#00ff00;
+  margin-bottom:15px;
+}
+
+.error-message {
+  background:#ff000022;
+  border:2px solid #ff0000;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:20px;
+  color:#ff0000;
+  display:none;
+}
+
+.back-link {
+  display:inline-block;
+  margin-bottom:20px;
+  color:#ff0;
+  text-decoration:none;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.back-link:hover {
+  color:#ff00ff;
+}
+
+.char-counter {
+  font-size:0.85rem;
+  color:#aaa;
+  margin-top:5px;
+}
+
+@media (max-width: 768px) {
+  header h1 {font-size:2rem;}
+  .form-container {padding:20px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">← Back to Home</a>
+  
+  <header>
+    <h1>🎓 Apply as a Tutor</h1>
+    <p>Join our community of educators and make a difference</p>
+  </header>
+
+  <div id="authRequired" class="auth-required">
+    <h3>🔒 Authentication Required</h3>
+    <p>You must be logged in to submit a tutor application.</p>
+    <button onclick="window.location.href='/'">Go to Login</button>
+  </div>
+
+  <div id="errorMessage" class="error-message"></div>
+  
+  <div id="successMessage" class="success-message">
+    <h2>✅ Application Submitted!</h2>
+    <p>Thank you for applying to Tutors Link. We've sent a confirmation email to your address.</p>
+    <p>Our team will review your application and get back to you within 3-5 business days.</p>
+    <button onclick="window.location.href='/'">Return to Home</button>
+  </div>
+
+  <form id="tutorApplicationForm" class="form-container" style="display:none;">
+    <div class="info-box">
+      <strong>📋 Important:</strong> Please fill out all fields marked with <span style="color:#ff0;">*</span> carefully. This information will be used to evaluate your application.
+    </div>
+
+    <!-- Personal Information -->
+    <div class="form-section">
+      <h2>Personal Information</h2>
+      
+      <div class="form-group">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required readonly>
+        <div class="info-box" style="margin-top:10px; font-size:0.85rem;">Your email from your account</div>
+      </div>
+
+      <div class="form-group">
+        <label>Discord Username <span class="required">*</span></label>
+        <input type="text" id="discordUsername" name="discordUsername" placeholder="e.g., username#1234" required>
+        <div class="info-box" style="margin-top:10px; font-size:0.85rem;">Please don't change your username after submitting</div>
+      </div>
+
+      <div class="form-group">
+        <label>Country <span class="required">*</span></label>
+        <input type="text" id="country" name="country" placeholder="e.g., United Kingdom" required>
+      </div>
+
+      <div class="form-group">
+        <label>Languages Spoken Fluently <span class="required">*</span></label>
+        <input type="text" id="languagesSpoken" name="languagesSpoken" placeholder="e.g., English, Spanish, French" required>
+      </div>
+    </div>
+
+    <!-- Subject Information -->
+    <div class="form-section">
+      <h2>Subject Details</h2>
+      
+      <div class="form-group">
+        <label>Subject to Teach <span class="required">*</span></label>
+        <input type="text" id="subject" name="subject" placeholder="e.g., Accounting" required>
+      </div>
+
+      <div class="form-group">
+        <label>Subject Code <span class="required">*</span></label>
+        <input type="text" id="subjectCode" name="subjectCode" placeholder="e.g., 0452" required>
+      </div>
+
+      <div class="form-group">
+        <label>Examination Board <span class="required">*</span></label>
+        <input type="text" id="examinationBoard" name="examinationBoard" placeholder="e.g., Cambridge, Edexcel, AQA" required>
+      </div>
+
+      <div class="form-group">
+        <label>Teaching Level <span class="required">*</span></label>
+        <input type="text" id="teachingLevel" name="teachingLevel" placeholder="e.g., IGCSE, A Level, AS Level" required>
+      </div>
+
+      <div class="form-group">
+        <label>Academic Result Achieved <span class="required">*</span></label>
+        <input type="text" id="academicResult" name="academicResult" placeholder="e.g., A*/9, May June, 2022" required>
+      </div>
+    </div>
+
+    <!-- Teaching Experience -->
+    <div class="form-section">
+      <h2>Teaching Experience & Qualifications</h2>
+      
+      <div class="form-group">
+        <label>Teaching/Tutoring Experience <span class="required">*</span></label>
+        <textarea id="teachingExperience" name="teachingExperience" placeholder="Describe your teaching experience (years, student ages, levels). If no experience, mention that." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Highest Qualification <span class="required">*</span></label>
+        <select id="highestQualification" name="highestQualification" required>
+          <option value="">Select your qualification</option>
+          <option value="High School / IGCSE / O Levels">High School / IGCSE / O Levels</option>
+          <option value="A Levels / AS Levels">A Levels / AS Levels</option>
+          <option value="Bachelor's Degree">Bachelor's Degree</option>
+          <option value="Master's Degree">Master's Degree</option>
+          <option value="PhD / Doctorate">PhD / Doctorate</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Reference/Testimonial <span class="required">*</span></label>
+        <textarea id="reference" name="reference" placeholder="Provide a reference or testimonial from a former student. If none available, mention that." required></textarea>
+      </div>
+    </div>
+
+    <!-- Teaching Format & Rates -->
+    <div class="form-section">
+      <h2>Teaching Format & Pricing</h2>
+      
+      <div class="form-group">
+        <label>Teaching Format <span class="required">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="formatOneOnOne" name="teachingFormat" value="One-on-one" required>
+            <label for="formatOneOnOne" style="margin:0;">One-on-one</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="formatGroup" name="teachingFormat" value="Group classes">
+            <label for="formatGroup" style="margin:0;">Group classes</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="formatBoth" name="teachingFormat" value="Both">
+            <label for="formatBoth" style="margin:0;">Both</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>One-on-One Rate per Class (USD) <span class="required">*</span></label>
+        <input type="number" id="oneOnOneRate" name="oneOnOneRate" placeholder="Enter 0 if only group classes" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Group Class Rate per Class (USD) <span class="required">*</span></label>
+        <input type="number" id="groupClassRate" name="groupClassRate" placeholder="Enter 0 if only one-on-one" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Group Class Size (students) <span class="required">*</span></label>
+        <input type="number" id="groupClassSize" name="groupClassSize" placeholder="Enter 0 if only one-on-one" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Classes per Week/Month per Student <span class="required">*</span></label>
+        <input type="text" id="classesPerWeekMonth" name="classesPerWeekMonth" placeholder="e.g., 4 per week, 16 per month" required>
+      </div>
+
+      <div class="form-group">
+        <label>Class Duration (minutes) <span class="required">*</span></label>
+        <input type="number" id="classDuration" name="classDuration" placeholder="e.g., 60" min="15" required>
+      </div>
+    </div>
+
+    <!-- Documents & Media -->
+    <div class="form-section">
+      <h2>Documents & Media</h2>
+      
+      <div class="info-box">
+        <strong>📎 File Uploads:</strong> Please upload your documents to Google Drive, Dropbox, or similar service and make them publicly viewable. Then paste the link below.
+      </div>
+
+      <div class="form-group">
+        <label>Qualification Document Link <span class="required">*</span></label>
+        <input type="url" id="qualificationDocumentLink" name="qualificationDocumentLink" placeholder="https://drive.google.com/..." required>
+      </div>
+
+      <div class="form-group">
+        <label>Academic Results Link <span class="required">*</span></label>
+        <input type="url" id="academicResultsLink" name="academicResultsLink" placeholder="https://drive.google.com/..." required>
+      </div>
+
+      <div class="form-group">
+        <label>Teaching Video Link (10-15 min) <span class="required">*</span></label>
+        <input type="url" id="teachingVideoLink" name="teachingVideoLink" placeholder="https://youtube.com/..." required>
+        <div class="info-box" style="margin-top:10px; font-size:0.85rem;">Upload a 10-15 minute video demonstrating your teaching style (max 30 min)</div>
+      </div>
+    </div>
+
+    <!-- Professional Bio -->
+    <div class="form-section">
+      <h2>Professional Bio</h2>
+      
+      <div class="form-group">
+        <label>Your Professional Bio (max 60 words) <span class="required">*</span></label>
+        <textarea id="professionalBio" name="professionalBio" maxlength="500" placeholder="Write a short professional bio that will be shown to students. Include qualifications, experience, and why students should choose you." required></textarea>
+        <div class="char-counter"><span id="bioCharCount">0</span> / 500 characters</div>
+      </div>
+    </div>
+
+    <!-- Terms & Conditions -->
+    <div class="form-section">
+      <h2>Terms & Conditions</h2>
+      
+      <div class="info-box">
+        <strong>📜 Commission Terms:</strong> Tutors Link will keep 40% fees from students you receive through our platform during the first month only. From the second month onward, tutors keep 100% of their earnings.
+      </div>
+
+      <div class="form-group">
+        <div class="radio-option">
+          <input type="checkbox" id="agreeToTerms" name="agreeToTerms" required>
+          <label for="agreeToTerms" style="margin:0;">I agree to the Tutors Link commission terms <span class="required">*</span></label>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn">Submit Application</button>
+  </form>
+</div>
+
+<script type="module">
+import { getCurrentUser } from './auth.js';
+
+// Check authentication on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const user = getCurrentUser();
+  
+  if (!user) {
+    document.getElementById('authRequired').style.display = 'block';
+    document.getElementById('tutorApplicationForm').style.display = 'none';
+  } else {
+    document.getElementById('authRequired').style.display = 'none';
+    document.getElementById('tutorApplicationForm').style.display = 'block';
+    document.getElementById('email').value = user.email;
+  }
+});
+
+// Character counter for bio
+document.getElementById('professionalBio').addEventListener('input', (e) => {
+  document.getElementById('bioCharCount').textContent = e.target.value.length;
+});
+
+// Form submission
+document.getElementById('tutorApplicationForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const user = getCurrentUser();
+  if (!user) {
+    showError('You must be logged in to submit the application.');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  // Determine API base URL
+  const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://tutorslink.up.railway.app';
+
+  // Get form data
+  const formData = {
+    userId: user.uid,
+    email: document.getElementById('email').value,
+    discordUsername: document.getElementById('discordUsername').value,
+    subject: document.getElementById('subject').value,
+    subjectCode: document.getElementById('subjectCode').value,
+    examinationBoard: document.getElementById('examinationBoard').value,
+    academicResult: document.getElementById('academicResult').value,
+    teachingLevel: document.getElementById('teachingLevel').value,
+    teachingExperience: document.getElementById('teachingExperience').value,
+    languagesSpoken: document.getElementById('languagesSpoken').value,
+    country: document.getElementById('country').value,
+    reference: document.getElementById('reference').value,
+    teachingFormat: document.querySelector('input[name="teachingFormat"]:checked').value,
+    oneOnOneRate: document.getElementById('oneOnOneRate').value,
+    groupClassRate: document.getElementById('groupClassRate').value,
+    groupClassSize: document.getElementById('groupClassSize').value,
+    classesPerWeekMonth: document.getElementById('classesPerWeekMonth').value,
+    classDuration: document.getElementById('classDuration').value,
+    highestQualification: document.getElementById('highestQualification').value,
+    qualificationDocumentLink: document.getElementById('qualificationDocumentLink').value,
+    teachingVideoLink: document.getElementById('teachingVideoLink').value,
+    academicResultsLink: document.getElementById('academicResultsLink').value,
+    professionalBio: document.getElementById('professionalBio').value,
+    agreeToTerms: document.getElementById('agreeToTerms').checked
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/tutor-applications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      document.getElementById('tutorApplicationForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      showError(data.message || 'Failed to submit application. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Application';
+    }
+  } catch (error) {
+    console.error('Error submitting application:', error);
+    showError('Network error. Please check your connection and try again.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Application';
+  }
+});
+
+function showError(message) {
+  const errorDiv = document.getElementById('errorMessage');
+  errorDiv.textContent = message;
+  errorDiv.style.display = 'block';
+  window.scrollTo(0, 0);
+  setTimeout(() => {
+    errorDiv.style.display = 'none';
+  }, 5000);
+}
+</script>
+</body>
+</html>
