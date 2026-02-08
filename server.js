@@ -13,18 +13,25 @@ const PORT = process.env.PORT || 3000;
 app.use(cors()); // Allow cross-origin requests from GitHub Pages
 app.use(express.json()); // Parse JSON request bodies
 
-// Serve static files only in development
-// In production, the frontend will be hosted on GitHub Pages separately
-if (process.env.NODE_ENV !== 'production') {
-  app.use(express.static('.'));
-}
+// Serve static files in all environments
+// This allows Railway to serve the frontend for testing/verification
+// In production deployments, GitHub Pages serves the main frontend
+app.use(express.static('.'));
 
 // ============================================
 // MongoDB Connection
 // ============================================
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('✅ Connected to MongoDB Atlas'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Connected to MongoDB Atlas'))
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
+    console.warn('⚠️  Server will continue running without database connection');
+  });
+} else {
+  console.warn('⚠️  MONGODB_URI not set. Server running without database connection.');
+  console.warn('⚠️  Database-dependent API routes will fail until MONGODB_URI is configured.');
+}
 
 // ============================================
 // Mongoose Schemas and Models
@@ -303,8 +310,56 @@ app.get('/api/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is running,healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
+});
+
+// Root endpoint for quick verification
+app.get('/', (req, res) => {
+  // Check if index.html exists, if not provide a simple response
+  const fs = require('fs');
+  const path = require('path');
+  const indexPath = path.join(__dirname, 'index.html');
+  
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>TutorsLink API Server</title>
+        <style>
+          body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+          h1 { color: #333; }
+          .status { padding: 10px; border-radius: 5px; margin: 10px 0; }
+          .success { background-color: #d4edda; color: #155724; }
+          .warning { background-color: #fff3cd; color: #856404; }
+        </style>
+      </head>
+      <body>
+        <h1>🚀 TutorsLink API Server</h1>
+        <div class="status success">
+          <strong>✅ Server Status:</strong> Running
+        </div>
+        <div class="status ${mongoose.connection.readyState === 1 ? 'success' : 'warning'}">
+          <strong>${mongoose.connection.readyState === 1 ? '✅' : '⚠️'} Database:</strong> 
+          ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}
+        </div>
+        <h2>Available Endpoints:</h2>
+        <ul>
+          <li><code>GET /api/health</code> - Health check</li>
+          <li><code>GET /api/tutors</code> - Fetch all tutors</li>
+          <li><code>POST /api/tutors</code> - Add a new tutor</li>
+          <li><code>POST /api/bookings</code> - Create a booking</li>
+          <li><code>POST /api/support</code> - Submit support message</li>
+        </ul>
+        <p><small>Time: ${new Date().toISOString()}</small></p>
+      </body>
+      </html>
+    `);
+  }
 });
 
 // ============================================
