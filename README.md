@@ -25,12 +25,14 @@ Connect with tutors worldwide. Free for students, prices set by tutors. All paym
 - **Frontend:** Static HTML/CSS/JS hosted on GitHub Pages
 - **Backend:** Node.js/Express API hosted on Railway
 - **Database:** MongoDB Atlas (free tier with GitHub Student Pack)
+- **Authentication:** Firebase Authentication (client-side)
 
 ## 📋 Prerequisites
 
 - Node.js (v14 or higher)
 - MongoDB Atlas account (free with [GitHub Student Developer Pack](https://education.github.com/pack))
 - Railway account (for backend deployment)
+- Firebase account (free) for authentication
 - Discord webhook URL (optional, for support notifications)
 
 ## 🎓 Setting Up MongoDB Atlas (GitHub Student Pack)
@@ -75,6 +77,55 @@ Connect with tutors worldwide. Free for students, prices set by tutors. All paym
    - Copy the connection string (looks like: `mongodb+srv://username:password@cluster.mongodb.net/`)
    - Replace `<password>` with your actual password
    - Add a database name at the end: `mongodb+srv://username:password@cluster.mongodb.net/tutorslink?retryWrites=true&w=majority`
+
+## 🔥 Setting Up Firebase Authentication
+
+Firebase Authentication handles user sign-up and login for the website. Follow these steps to configure it:
+
+### Quick Setup
+
+1. **Create a Firebase project:**
+   - Go to [Firebase Console](https://console.firebase.google.com/)
+   - Click "Add project"
+   - Enter project name (e.g., "Tutors Link")
+   - Follow the wizard to create your project
+
+2. **Enable Email/Password authentication:**
+   - In Firebase Console, go to "Authentication" > "Sign-in method"
+   - Enable "Email/Password"
+   - Save changes
+
+3. **Add authorized domains:**
+   - In "Authentication" > "Settings" > "Authorized domains"
+   - Add your domains:
+     - `tutorslink.github.io` (or your GitHub Pages domain)
+     - `localhost` (for local testing)
+   - This prevents CORS errors
+
+4. **Register your web app:**
+   - Go to Project Settings (gear icon)
+   - Under "Your apps", click Web icon (`</>`)
+   - Register app with a nickname
+   - Copy the Firebase configuration
+
+5. **Update firebase-config.js:**
+   - Open `firebase-config.js` in the repository
+   - Replace placeholder values with your Firebase config:
+     ```javascript
+     const firebaseConfig = {
+       apiKey: "AIzaSyC...",
+       authDomain: "your-project.firebaseapp.com",
+       projectId: "your-project",
+       storageBucket: "your-project.appspot.com",
+       messagingSenderId: "123456789012",
+       appId: "1:123456789012:web:abc..."
+     };
+     ```
+   - Commit and push the changes
+
+**Note:** Firebase credentials are safe to commit - they're public identifiers, not secrets. Security comes from Firebase rules and authorized domains.
+
+**For detailed instructions, see [FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
 
 ## 🛠️ Local Development Setup
 
@@ -129,6 +180,7 @@ Connect with tutors worldwide. Free for students, prices set by tutors. All paym
      - `MONGODB_URI`: Your MongoDB Atlas connection string
      - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL (optional)
    - Railway automatically provides `PORT` - don't set it manually
+   - **Note:** Do NOT add Firebase variables here - Firebase is client-side only
 
 4. **Deploy:**
    - Railway automatically deploys on push to main branch
@@ -220,11 +272,25 @@ curl -X POST https://your-app.railway.app/api/support \
 
 ## 🔧 Environment Variables
 
+### Backend Environment Variables (Railway)
+
+These are configured in Railway dashboard under "Variables" tab:
+
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `MONGODB_URI` | MongoDB Atlas connection string | Yes |
-| `PORT` | Server port (auto-provided by Railway) | No |
+| `PORT` | Server port (auto-provided by Railway) | No (Railway sets this) |
 | `DISCORD_WEBHOOK_URL` | Discord webhook for support notifications | No |
+
+### Frontend Configuration (Firebase)
+
+Firebase configuration is **NOT** set in Railway environment variables. Instead:
+
+- Edit `firebase-config.js` directly with your Firebase credentials
+- These values are safe to commit to GitHub (they're public identifiers)
+- See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for instructions
+
+**Why not use environment variables?** The frontend is static HTML/CSS/JS hosted on GitHub Pages, which doesn't have access to server-side environment variables. Firebase config must be in the client-side JavaScript code.
 
 ## 📦 Dependencies
 
