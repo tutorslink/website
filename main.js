@@ -1,5 +1,5 @@
 // main.js
-import { signup, login, logout, monitorAuthState } from './auth.js';
+import { signup, login, logout, monitorAuthState, getCurrentUser } from './auth.js';
 
 // Track mode
 let currentAuthMode = 'login';
@@ -15,6 +15,9 @@ window.openAuthModal = function (mode) {
   const submitBtn = document.getElementById('auth-submit-btn');
   const toggleText = document.getElementById('auth-toggle-text');
   const toggleLink = document.getElementById('auth-toggle-link');
+
+const authSection = document.getElementById("authSection");
+const appSection = document.getElementById("appSection");
 
   if (mode === 'login') {
     title.textContent = 'Login';
@@ -109,51 +112,31 @@ monitorAuthState((user) => {
 
 console.log('Firebase Auth loaded via main.js');
 
+// Auth state bootstrapping 
 
-// Grab inputs
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-
-// Grab buttons
-const signupBtn = document.getElementById('signupBtn');
-const loginBtn = document.getElementById('loginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-
-// SIGN UP
-if (signupBtn) {
-  signupBtn.addEventListener('click', async () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    const result = await signup(email, password);
-    alert(result.message);
-  });
-}
-
-// LOGIN
-if (loginBtn) {
-  loginBtn.addEventListener('click', async () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    const result = await login(email, password);
-    alert(result.message);
-  });
-}
-
-// LOGOUT (optional button)
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    const result = await logout();
-    alert(result.message);
-  });
-}
-
-// AUTH STATE (persists login across refresh)
 monitorAuthState((user) => {
   if (user) {
-    console.log('Logged in as:', user.email);
+    console.log("✅ Logged in:", user.uid);
+
+    authSection.style.display = "none";
+    appSection.style.display = "block";
+
+    // Safe to access currentUser now
+    // const currentUser = getCurrentUser();
+
   } else {
-    console.log('Logged out');
+    console.log("🚪 Logged out");
+
+    authSection.style.display = "block";
+    appSection.style.display = "none";
   }
 });
+
+
+//  protect dashboard page  (logged out user can't access)
+    if (window.location.pathname.includes('dashboard')) {
+      window.location.href = '/index.html';
+    }
+  }
+});
+
