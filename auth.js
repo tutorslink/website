@@ -1,7 +1,8 @@
 // Firebase Authentication Functions
 // Using Firebase Modular SDK (v10+)
 
-import { auth, isFirebaseConfigured } from './firebase-config.js';
+import { auth } from './firebase-config.js';
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -13,18 +14,9 @@ import {
 // Sign Up Function
 // ============================================
 export async function signup(email, password) {
-  // Check if Firebase is configured
-  if (!isFirebaseConfigured) {
-    console.error('Firebase is not configured');
-    return {
-      success: false,
-      error: 'auth/not-configured',
-      message: 'Authentication is not configured. Please contact the administrator.'
-    };
-  }
-
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = 
+    await createUserWithEmailAndPassword(auth, email, password);
     return {
       success: true,
       user: userCredential.user,
@@ -44,15 +36,7 @@ export async function signup(email, password) {
 // Login Function
 // ============================================
 export async function login(email, password) {
-  // Check if Firebase is configured
-  if (!isFirebaseConfigured) {
-    console.error('Firebase is not configured');
-    return {
-      success: false,
-      error: 'auth/not-configured',
-      message: 'Authentication is not configured. Please contact the administrator.'
-    };
-  }
+  
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -121,7 +105,6 @@ function getErrorMessage(errorCode) {
     'auth/network-request-failed': 'Network error. Please check your connection.',
     'auth/user-disabled': 'This account has been disabled.',
     'auth/operation-not-allowed': 'Email/password authentication is not enabled.',
-    'auth/not-configured': 'Authentication is not configured. Please contact the administrator.',
     'auth/invalid-api-key': 'Invalid Firebase API key. Please check your configuration.',
     'auth/app-deleted': 'Firebase app has been deleted. Please check your configuration.',
   };
