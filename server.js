@@ -8,10 +8,13 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors()); // Allow cross-origin requests from GitHub Pages
@@ -101,6 +104,27 @@ function decrypt(encryptedText) {
 // ============================================
 
 // Tutor Schema
+
+// User Schema (Auth)
+const userSchema = new mongoose.Schema({
+  email: 
+  {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  }
+});
+
 const tutorSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -307,6 +331,7 @@ const tutorApplicationSchema = new mongoose.Schema({
 });
 
 // Create models from schemas
+const User = mongoose.model('User', userSchema);
 const Tutor = mongoose.model('Tutor', tutorSchema);
 const Booking = mongoose.model('Booking', bookingSchema);
 const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
@@ -316,9 +341,100 @@ const TutorApplication = mongoose.model('TutorApplication', tutorApplicationSche
 // API Routes
 // ============================================
 
+// POST /api/signup - Create new user
+app.post('/api/signup', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password required' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
+      email,
+      password: hashedPassword
+   });
+
+    res.status(201).json({ message: 'Signup successful' });
+
+  } catch (err) {
+    console.error('SIGNUP ERROR:', err);
+    res.status(500).json({ message: 'Signup failed' });
+  }
+});
+
+// POST /api/login - Login existing user
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      token
+    });
+
+  } catch (err) {
+    console.error('LOGIN ERROR:', err);
+    res.status(500).json({ message: 'Login failed' });
+  }
+});
+
+// ============================================
+// Authentication Middleware
+// Protects routes that require login
+// ============================================
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Authorization token missing' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.userId; 
+    
+    // Attach user ID to request
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+}
+
+
 // GET /api/tutors - Fetch all tutors
 // Note: Consider adding rate limiting in production (e.g., express-rate-limit)
 // to prevent abuse of this endpoint
+
 app.get('/api/tutors', async (req, res) => {
   try {
     const tutors = await Tutor.find().sort({ createdAt: -1 });
@@ -336,7 +452,8 @@ app.get('/api/tutors', async (req, res) => {
   }
 });
 
-// POST /api/tutors - Add a new tutor (Staff Portal)
+// POST /api/tutors - Add a new tutor (Staff Portal) 
+
 app.post('/api/tutors', async (req, res) => {
   try {
     const { name, subjects, price, timezone, languages, category, availability } = req.body;
@@ -378,7 +495,7 @@ app.post('/api/tutors', async (req, res) => {
 });
 
 // POST /api/bookings - Create a new booking request
-app.post('/api/bookings', async (req, res) => {
+app.post('/api/bookings', authMiddleware, async (req, res) => {
   try {
     const { studentName, studentEmail, tutorId, message } = req.body;
     
