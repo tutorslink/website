@@ -1,18 +1,5 @@
 // Firebase Configuration and Initialization
 // Using Firebase Modular SDK (v10+)
-// 
-// IMPORTANT: Replace the placeholder values below with your actual Firebase config
-// 
-// To get your Firebase config:
-// 1. Go to Firebase Console (https://console.firebase.google.com/)
-// 2. Select your project or create a new one
-// 3. Enable Email/Password authentication in Authentication > Sign-in method
-// 4. Click on Project Settings (gear icon)
-// 5. Scroll down to "Your apps" section
-// 6. Click on the Web app icon (</>)
-// 7. Copy the config values and replace the placeholders below
-//
-// Note: These values are safe to commit to GitHub. Firebase uses security rules, not credential secrecy.
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -20,12 +7,12 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 // Firebase configuration
 // REPLACE THESE PLACEHOLDER VALUES WITH YOUR ACTUAL FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBnwIVmod25Y-sZVYRnMif6eJVhqXXRvRA",
+  authDomain: "tutors-link.firebaseapp.com",
+  projectId: "tutors-link",
+  storageBucket: "tutors-link.firebasestorage.app",
+  messagingSenderId: "495466917430",
+  appId: "1:495466917430:web:a6a01860f14eed63b07297"
 };
 
 // Validate configuration - check all fields, not just API key
