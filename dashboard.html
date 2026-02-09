@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Tutors Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
+body {background:#000; color:#fff; min-height:100vh;}
+
+/* Navigation */
+nav {
+  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  padding:15px 0;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 2px 10px rgba(255,0,255,0.3);
+}
+.nav-container {
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.nav-brand {font-size:1.5rem; font-weight:700;}
+.nav-menu {display:flex; gap:20px; align-items:center;}
+.nav-link {padding:8px 16px; border-radius:8px; transition:0.3s; cursor:pointer;}
+.nav-link:hover {background:rgba(255,255,255,0.2);}
+.user-info {display:flex; align-items:center; gap:10px;}
+.user-role {
+  background:rgba(255,255,255,0.2);
+  padding:4px 12px;
+  border-radius:12px;
+  font-size:0.85rem;
+  font-weight:600;
+}
+.notification-badge {
+  position:relative;
+  cursor:pointer;
+}
+.badge-count {
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  background:#ff0;
+  color:#000;
+  border-radius:50%;
+  width:20px;
+  height:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.75rem;
+  font-weight:700;
+}
+
+/* Main Layout */
+.container {
+  max-width:1200px;
+  margin:0 auto;
+  padding:40px 20px;
+}
+
+.dashboard-header {
+  margin-bottom:40px;
+}
+.dashboard-header h1 {
+  font-size:2.5rem;
+  margin-bottom:10px;
+  background:linear-gradient(90deg,#ff0,#ff00ff,#00f0ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* Cards */
+.cards-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  gap:25px;
+  margin-bottom:40px;
+}
+.card {
+  background:#111;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(255,0,255,0.2);
+  transition:0.3s;
+}
+.card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 5px 30px rgba(255,0,255,0.4);
+}
+.card h3 {
+  color:#ff0;
+  margin-bottom:15px;
+  font-size:1.3rem;
+}
+.card-stat {
+  font-size:2.5rem;
+  font-weight:700;
+  color:#00f0ff;
+  margin:10px 0;
+}
+.card-description {
+  color:#aaa;
+  font-size:0.9rem;
+}
+
+/* Sections */
+.section {
+  margin-bottom:50px;
+}
+.section-title {
+  font-size:2rem;
+  margin-bottom:25px;
+  color:#ff00ff;
+}
+
+/* Table */
+.table-container {
+  background:#111;
+  border-radius:15px;
+  overflow:hidden;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+thead {
+  background:rgba(255,0,255,0.2);
+}
+th, td {
+  padding:15px;
+  text-align:left;
+}
+tbody tr {
+  border-bottom:1px solid #222;
+  transition:0.2s;
+}
+tbody tr:hover {
+  background:rgba(255,0,255,0.1);
+}
+.status-badge {
+  padding:4px 12px;
+  border-radius:12px;
+  font-size:0.85rem;
+  font-weight:600;
+}
+.status-active {background:#0f0; color:#000;}
+.status-pending {background:#ff0; color:#000;}
+.status-completed {background:#00f0ff; color:#000;}
+
+/* Buttons */
+.btn {
+  padding:12px 24px;
+  border-radius:10px;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.3s;
+  display:inline-block;
+}
+.btn-primary {
+  background:#ff0;
+  color:#000;
+}
+.btn-primary:hover {
+  background:#ff00ff;
+  color:#fff;
+}
+.btn-secondary {
+  background:#00f0ff;
+  color:#000;
+}
+.btn-secondary:hover {
+  background:#ff00ff;
+  color:#fff;
+}
+.btn-danger {
+  background:#f00;
+  color:#fff;
+}
+
+/* Modal */
+.modal {
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.9);
+  z-index:1000;
+  justify-content:center;
+  align-items:center;
+}
+.modal-content {
+  background:#111;
+  padding:40px;
+  border-radius:20px;
+  max-width:600px;
+  width:90%;
+  max-height:80vh;
+  overflow-y:auto;
+  box-shadow:0 0 30px rgba(255,0,255,0.5);
+}
+.modal-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+.modal-header h2 {
+  color:#ff0;
+}
+.close-modal {
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:2rem;
+  cursor:pointer;
+  padding:0;
+  width:30px;
+  height:30px;
+  line-height:1;
+}
+.form-group {
+  margin-bottom:20px;
+}
+.form-group label {
+  display:block;
+  margin-bottom:8px;
+  color:#ff0;
+  font-weight:600;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  background:#222;
+  color:#fff;
+  font-size:1rem;
+}
+.form-group textarea {
+  min-height:100px;
+  resize:vertical;
+}
+
+/* Loading */
+.loading {
+  text-align:center;
+  padding:40px;
+  color:#ff0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align:center;
+  padding:60px 20px;
+  color:#aaa;
+}
+.empty-state-icon {
+  font-size:4rem;
+  margin-bottom:20px;
+}
+
+/* Hide by default */
+.hidden {display:none !important;}
+
+/* Role-specific sections */
+#student-section,
+#tutor-section,
+#admin-section {
+  display:none;
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-container">
+    <div class="nav-brand">Tutors Link</div>
+    <div class="nav-menu">
+      <span class="nav-link" onclick="window.location.href='index.html'">Home</span>
+      <span class="nav-link" onclick="window.location.href='dashboard.html'">Dashboard</span>
+      <div class="notification-badge" id="notificationBell" onclick="showNotifications()">
+        🔔
+        <span class="badge-count hidden" id="notificationCount">0</span>
+      </div>
+      <div class="user-info">
+        <span id="userEmail"></span>
+        <span class="user-role" id="userRole"></span>
+      </div>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+  <div class="dashboard-header">
+    <h1>Welcome to Your Dashboard</h1>
+    <p id="welcomeMessage"></p>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loadingState" class="loading">
+    <div>Loading your dashboard...</div>
+  </div>
+
+  <!-- Student Section -->
+  <div id="student-section">
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Active Enrollments</h3>
+        <div class="card-stat" id="studentEnrollmentCount">0</div>
+        <p class="card-description">Monthly subscriptions with tutors</p>
+      </div>
+      <div class="card">
+        <h3>Upcoming Sessions</h3>
+        <div class="card-stat" id="studentSessionCount">0</div>
+        <p class="card-description">Scheduled classes this week</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">My Enrollments</h2>
+      <div id="studentEnrollmentsList" class="table-container">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">My Sessions</h2>
+      <div id="studentSessionsList" class="table-container">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutor Section -->
+  <div id="tutor-section">
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Active Students</h3>
+        <div class="card-stat" id="tutorStudentCount">0</div>
+        <p class="card-description">Currently enrolled students</p>
+      </div>
+      <div class="card">
+        <h3>This Month's Earnings</h3>
+        <div class="card-stat" id="tutorEarnings">$0</div>
+        <p class="card-description">Before commission</p>
+      </div>
+      <div class="card">
+        <h3>Average Rating</h3>
+        <div class="card-stat" id="tutorRating">0.0</div>
+        <p class="card-description">Based on student reviews</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+        <h2 class="section-title" style="margin:0;">My Sessions</h2>
+        <button class="btn btn-primary" onclick="showCreateSessionModal()">+ Add Session</button>
+      </div>
+      <div id="tutorSessionsList" class="table-container">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">My Students</h2>
+      <div id="tutorEnrollmentsList" class="table-container">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Section -->
+  <div id="admin-section">
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Total Users</h3>
+        <div class="card-stat" id="adminUserCount">0</div>
+        <p class="card-description">All platform users</p>
+      </div>
+      <div class="card">
+        <h3>Active Enrollments</h3>
+        <div class="card-stat" id="adminEnrollmentCount">0</div>
+        <p class="card-description">Current subscriptions</p>
+      </div>
+      <div class="card">
+        <h3>Pending Reviews</h3>
+        <div class="card-stat" id="adminReviewCount">0</div>
+        <p class="card-description">Flagged for moderation</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Platform Management</h2>
+      <div style="display:flex; gap:15px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="window.location.href='admin.html'">Manage Users</button>
+        <button class="btn btn-secondary" onclick="window.location.href='admin-guides.html'">Manage Guides</button>
+        <button class="btn btn-secondary" onclick="window.location.href='admin-reviews.html'">Moderate Reviews</button>
+        <button class="btn btn-secondary" onclick="window.location.href='admin-settings.html'">Platform Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Session Modal (Tutor) -->
+<div id="createSessionModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Schedule New Session</h2>
+      <button class="close-modal" onclick="closeModal('createSessionModal')">&times;</button>
+    </div>
+    <form id="createSessionForm" onsubmit="submitCreateSession(event)">
+      <div class="form-group">
+        <label>Student Enrollment</label>
+        <select id="sessionEnrollment" required>
+          <option value="">Select a student...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date & Time</label>
+        <input type="datetime-local" id="sessionDate" required>
+      </div>
+      <div class="form-group">
+        <label>Duration (minutes)</label>
+        <input type="number" id="sessionDuration" value="60" required>
+      </div>
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <textarea id="sessionNotes"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Schedule Session</button>
+    </form>
+  </div>
+</div>
+
+<!-- Mark Attendance Modal -->
+<div id="attendanceModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Mark Attendance</h2>
+      <button class="close-modal" onclick="closeModal('attendanceModal')">&times;</button>
+    </div>
+    <form id="attendanceForm" onsubmit="submitAttendance(event)">
+      <input type="hidden" id="attendanceSessionId">
+      <div class="form-group">
+        <label>Attendance Status</label>
+        <select id="attendanceStatus" required>
+          <option value="">Select status...</option>
+          <option value="present">Present</option>
+          <option value="late">Late</option>
+          <option value="absent">Absent</option>
+          <option value="postponed">Postponed</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Submit Attendance</button>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script type="module">
+import { auth } from './firebase-config.js';
+import { logout as authLogout, monitorAuthState } from './auth.js';
+import * as api from './api-client.js';
+
+let currentUser = null;
+
+// Initialize dashboard
+monitorAuthState(async (firebaseUser) => {
+  if (!firebaseUser) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  try {
+    // Register/update user in backend
+    await api.registerUser(firebaseUser.uid, firebaseUser.email, firebaseUser.displayName);
+    
+    // Get full user profile
+    const response = await api.getCurrentUser();
+    currentUser = response.data;
+    
+    // Update UI
+    document.getElementById('userEmail').textContent = currentUser.email;
+    document.getElementById('userRole').textContent = currentUser.role.toUpperCase();
+    
+    document.getElementById('welcomeMessage').textContent = 
+      `You're logged in as a ${currentUser.role}. ${getRoleWelcomeMessage(currentUser.role)}`;
+    
+    // Show role-specific section
+    showRoleSection(currentUser.role);
+    
+    // Load role-specific data
+    await loadDashboardData(currentUser.role);
+    
+    // Load notifications
+    loadNotifications();
+    
+    document.getElementById('loadingState').classList.add('hidden');
+  } catch (error) {
+    console.error('Dashboard initialization error:', error);
+    alert('Failed to load dashboard. Please try again.');
+  }
+});
+
+function getRoleWelcomeMessage(role) {
+  const messages = {
+    guest: 'Browse tutors and book demo classes.',
+    student: 'Manage your enrollments and sessions.',
+    tutor: 'Schedule sessions and track your students.',
+    admin: 'Manage the platform and moderate content.'
+  };
+  return messages[role] || '';
+}
+
+function showRoleSection(role) {
+  document.getElementById('student-section').style.display = role === 'student' ? 'block' : 'none';
+  document.getElementById('tutor-section').style.display = role === 'tutor' ? 'block' : 'none';
+  document.getElementById('admin-section').style.display = role === 'admin' ? 'block' : 'none';
+}
+
+async function loadDashboardData(role) {
+  if (role === 'student') {
+    await loadStudentDashboard();
+  } else if (role === 'tutor') {
+    await loadTutorDashboard();
+  } else if (role === 'admin') {
+    await loadAdminDashboard();
+  }
+}
+
+async function loadStudentDashboard() {
+  try {
+    const [enrollments, sessions] = await Promise.all([
+      api.getMyEnrollments(),
+      api.getMySessions()
+    ]);
+
+    document.getElementById('studentEnrollmentCount').textContent = 
+      enrollments.data.filter(e => e.status === 'active').length;
+    
+    const upcomingSessions = sessions.data.filter(s => 
+      s.status === 'scheduled' && new Date(s.scheduledDate) > new Date()
+    );
+    document.getElementById('studentSessionCount').textContent = upcomingSessions.length;
+
+    renderStudentEnrollments(enrollments.data);
+    renderStudentSessions(sessions.data);
+  } catch (error) {
+    console.error('Load student dashboard error:', error);
+  }
+}
+
+async function loadTutorDashboard() {
+  try {
+    const [enrollments, sessions] = await Promise.all([
+      api.getMyEnrollments(),
+      api.getMySessions()
+    ]);
+
+    const activeEnrollments = enrollments.data.filter(e => e.status === 'active');
+    document.getElementById('tutorStudentCount').textContent = activeEnrollments.length;
+    
+    const monthlyEarnings = activeEnrollments.reduce((sum, e) => 
+      sum + (e.monthlyRate * (1 - e.commissionRate)), 0
+    );
+    document.getElementById('tutorEarnings').textContent = `$${monthlyEarnings.toFixed(2)}`;
+
+    // Rating will be fetched from tutor profile if available
+    document.getElementById('tutorRating').textContent = '⭐ N/A';
+
+    renderTutorSessions(sessions.data);
+    renderTutorEnrollments(enrollments.data);
+    
+    // Store enrollments for session creation
+    window.tutorEnrollments = activeEnrollments;
+  } catch (error) {
+    console.error('Load tutor dashboard error:', error);
+  }
+}
+
+async function loadAdminDashboard() {
+  // Admin stats would be loaded here
+  document.getElementById('adminUserCount').textContent = '...';
+  document.getElementById('adminEnrollmentCount').textContent = '...';
+  document.getElementById('adminReviewCount').textContent = '...';
+}
+
+function renderStudentEnrollments(enrollments) {
+  const container = document.getElementById('studentEnrollmentsList');
+  
+  if (enrollments.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>No active enrollments. Browse tutors to get started!</p></div>';
+    return;
+  }
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Tutor</th>
+          <th>Monthly Rate</th>
+          <th>Status</th>
+          <th>Next Billing</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${enrollments.map(e => `
+          <tr>
+            <td>${e.tutorId?.displayName || e.tutorId?.email || 'Unknown'}</td>
+            <td>$${e.monthlyRate}</td>
+            <td><span class="status-badge status-${e.status}">${e.status}</span></td>
+            <td>${e.nextBillingDate ? new Date(e.nextBillingDate).toLocaleDateString() : 'N/A'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+function renderStudentSessions(sessions) {
+  const container = document.getElementById('studentSessionsList');
+  
+  if (sessions.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No sessions scheduled yet.</p></div>';
+    return;
+  }
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Tutor</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>Attendance</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sessions.map(s => `
+          <tr>
+            <td>${new Date(s.scheduledDate).toLocaleString()}</td>
+            <td>${s.tutorId?.displayName || s.tutorId?.email || 'Unknown'}</td>
+            <td>${s.duration} min</td>
+            <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+            <td>${s.attendance?.studentMarked || 'Not marked'}</td>
+            <td>
+              ${s.status === 'scheduled' && !s.attendance?.studentMarked ? 
+                `<button class="btn btn-secondary" style="padding:6px 12px;" onclick="markAttendance('${s._id}')">Mark Attendance</button>` : 
+                '-'
+              }
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+function renderTutorSessions(sessions) {
+  const container = document.getElementById('tutorSessionsList');
+  
+  if (sessions.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No sessions scheduled. Add your first session!</p></div>';
+    return;
+  }
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Student</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>Your Marking</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sessions.map(s => `
+          <tr>
+            <td>${new Date(s.scheduledDate).toLocaleString()}</td>
+            <td>${s.studentId?.displayName || s.studentId?.email || 'Unknown'}</td>
+            <td>${s.duration} min</td>
+            <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+            <td>${s.attendance?.tutorMarked || 'Not marked'}</td>
+            <td>
+              ${s.status === 'scheduled' && !s.attendance?.tutorMarked ? 
+                `<button class="btn btn-secondary" style="padding:6px 12px;" onclick="markAttendance('${s._id}')">Mark Attendance</button>` : 
+                '-'
+              }
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+function renderTutorEnrollments(enrollments) {
+  const container = document.getElementById('tutorEnrollmentsList');
+  
+  if (enrollments.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>No students enrolled yet.</p></div>';
+    return;
+  }
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Monthly Rate</th>
+          <th>Commission</th>
+          <th>Your Earning</th>
+          <th>Status</th>
+          <th>Started</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${enrollments.map(e => `
+          <tr>
+            <td>${e.studentId?.displayName || e.studentId?.email || 'Unknown'}</td>
+            <td>$${e.monthlyRate}</td>
+            <td>${(e.commissionRate * 100).toFixed(0)}%</td>
+            <td>$${(e.monthlyRate * (1 - e.commissionRate)).toFixed(2)}</td>
+            <td><span class="status-badge status-${e.status}">${e.status}</span></td>
+            <td>${new Date(e.createdAt).toLocaleDateString()}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+async function loadNotifications() {
+  try {
+    const response = await api.getNotifications();
+    const { unreadCount } = response.data;
+    
+    if (unreadCount > 0) {
+      document.getElementById('notificationCount').textContent = unreadCount;
+      document.getElementById('notificationCount').classList.remove('hidden');
+    }
+  } catch (error) {
+    console.error('Load notifications error:', error);
+  }
+}
+
+// Global functions
+window.logout = async function() {
+  try {
+    await authLogout();
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('Failed to logout');
+  }
+};
+
+window.showCreateSessionModal = function() {
+  // Populate enrollment dropdown
+  const select = document.getElementById('sessionEnrollment');
+  select.innerHTML = '<option value="">Select a student...</option>';
+  
+  if (window.tutorEnrollments) {
+    window.tutorEnrollments.forEach(e => {
+      const option = document.createElement('option');
+      option.value = e._id;
+      option.textContent = e.studentId?.displayName || e.studentId?.email || 'Unknown Student';
+      select.appendChild(option);
+    });
+  }
+  
+  document.getElementById('createSessionModal').style.display = 'flex';
+};
+
+window.submitCreateSession = async function(event) {
+  event.preventDefault();
+  
+  const enrollmentId = document.getElementById('sessionEnrollment').value;
+  const scheduledDate = document.getElementById('sessionDate').value;
+  const duration = parseInt(document.getElementById('sessionDuration').value);
+  const notes = document.getElementById('sessionNotes').value;
+  
+  try {
+    await api.createSession({
+      enrollmentId,
+      scheduledDate,
+      duration,
+      notes
+    });
+    
+    alert('Session scheduled successfully!');
+    closeModal('createSessionModal');
+    location.reload();
+  } catch (error) {
+    console.error('Create session error:', error);
+    alert('Failed to schedule session: ' + error.message);
+  }
+};
+
+window.markAttendance = function(sessionId) {
+  document.getElementById('attendanceSessionId').value = sessionId;
+  document.getElementById('attendanceModal').style.display = 'flex';
+};
+
+window.submitAttendance = async function(event) {
+  event.preventDefault();
+  
+  const sessionId = document.getElementById('attendanceSessionId').value;
+  const status = document.getElementById('attendanceStatus').value;
+  
+  try {
+    await api.markAttendance(sessionId, status);
+    alert('Attendance marked successfully!');
+    closeModal('attendanceModal');
+    location.reload();
+  } catch (error) {
+    console.error('Mark attendance error:', error);
+    alert('Failed to mark attendance: ' + error.message);
+  }
+};
+
+window.closeModal = function(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+};
+
+window.showNotifications = function() {
+  alert('Notification panel coming soon!');
+};
+</script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 // main.js
 import { signup, login, logout, monitorAuthState, getCurrentUser } from './auth.js';
+import { registerUser } from './api-client.js';
 
 // Track mode
 let currentAuthMode = 'login';
@@ -16,8 +17,8 @@ window.openAuthModal = function (mode) {
   const toggleText = document.getElementById('auth-toggle-text');
   const toggleLink = document.getElementById('auth-toggle-link');
 
-const authSection = document.getElementById("authSection");
-const appSection = document.getElementById("appSection");
+  const authSection = document.getElementById("authSection");
+  const appSection = document.getElementById("appSection");
 
   if (mode === 'login') {
     title.textContent = 'Login';
@@ -55,37 +56,53 @@ window.toggleAuthMode = function () {
 // Handle Auth Submit
 // ===============================
 const authForm = document.getElementById('auth-form');
-authForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+if (authForm) {
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  const email = document.getElementById('auth-email').value;
-  const password = document.getElementById('auth-password').value;
-  const btn = document.getElementById('auth-submit-btn');
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    const btn = document.getElementById('auth-submit-btn');
 
-  btn.disabled = true;
-  const oldText = btn.textContent;
-  btn.textContent = 'Processing...';
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = 'Processing...';
 
-  try {
-    const result =
-      currentAuthMode === 'login'
-        ? await login(email, password)
-        : await signup(email, password);
+    try {
+      const result =
+        currentAuthMode === 'login'
+          ? await login(email, password)
+          : await signup(email, password);
 
-    if (result.success) {
-      alert(result.message);
-      closeAuthModal();
-    } else {
-      alert(result.message);
+      if (result.success) {
+        // Register with backend
+        try {
+          await registerUser(result.user.uid, result.user.email, result.user.displayName);
+          console.log('User registered with backend');
+        } catch (backendError) {
+          console.error('Backend registration error:', backendError);
+          // Continue anyway - user is authenticated with Firebase
+        }
+
+        alert(result.message);
+        closeAuthModal();
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error. Try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
     }
-  } catch (err) {
-    console.error(err);
-    alert('Unexpected error. Try again.');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = oldText;
-  }
-});
+  });
+}
 
 // ===============================
 // Logout
@@ -93,50 +110,59 @@ authForm.addEventListener('submit', async (e) => {
 window.handleLogout = async function () {
   const result = await logout();
   alert(result.message);
+  window.location.href = 'index.html';
 };
 
 // ===============================
 // Auth State Listener
 // ===============================
-monitorAuthState((user) => {
+monitorAuthState(async (user) => {
   const status = document.getElementById('auth-status');
   const email = document.getElementById('user-email-display');
 
   if (user) {
-    email.textContent = `Welcome, ${user.email}`;
-    status.style.display = 'block';
+    if (email) email.textContent = `Welcome, ${user.email}`;
+    if (status) status.style.display = 'block';
+    
+    // Register with backend if not already
+    try {
+      await registerUser(user.uid, user.email, user.displayName);
+    } catch (error) {
+      console.error('Backend sync error:', error);
+    }
   } else {
-    status.style.display = 'none';
+    if (status) status.style.display = 'none';
   }
 });
 
 console.log('Firebase Auth loaded via main.js');
 
 // Auth state bootstrapping 
+const authSection = document.getElementById("authSection");
+const appSection = document.getElementById("appSection");
 
-monitorAuthState((user) => {
-  if (user) {
-    console.log("✅ Logged in:", user.uid);
+if (authSection && appSection) {
+  monitorAuthState((user) => {
+    if (user) {
+      console.log("✅ Logged in:", user.uid);
 
-    authSection.style.display = "none";
-    appSection.style.display = "block";
+      authSection.style.display = "none";
+      appSection.style.display = "block";
+    } else {
+      console.log("🚪 Logged out");
 
-    // Safe to access currentUser now
-    // const currentUser = getCurrentUser();
-
-  } else {
-    console.log("🚪 Logged out");
-
-    authSection.style.display = "block";
-    appSection.style.display = "none";
-  }
-});
-
-
-//  protect dashboard page  (logged out user can't access)
-    if (window.location.pathname.includes('dashboard')) {
-      window.location.href = '/index.html';
+      authSection.style.display = "block";
+      appSection.style.display = "none";
     }
-  }
-});
+  });
+}
+
+// Protect dashboard page (logged out user can't access)
+if (window.location.pathname.includes('dashboard')) {
+  monitorAuthState((user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+    }
+  });
+}
 
