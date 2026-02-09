@@ -4,7 +4,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-// Firebase configuration
+// Firebase configuration 
 // REPLACE THESE PLACEHOLDER VALUES WITH YOUR ACTUAL FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBnwIVmod25Y-sZVYRnMif6eJVhqXXRvRA",
