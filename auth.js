@@ -7,8 +7,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // ============================================
 // Sign Up Function
@@ -47,6 +49,28 @@ export async function login(email, password) {
     };
   } catch (error) {
     console.error('Login error:', error);
+    return {
+      success: false,
+      error: error.code,
+      message: getErrorMessage(error.code)
+    };
+  }
+}
+
+// ============================================
+// Sign In with Google
+// ============================================
+export async function signInWithGoogle() {
+  try {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    return {
+      success: true,
+      user: userCredential.user,
+      message: 'Signed in with Google successfully!'
+    };
+  } catch (error) {
+    console.error('Google sign-in error:', error);
     return {
       success: false,
       error: error.code,
@@ -107,6 +131,10 @@ function getErrorMessage(errorCode) {
     'auth/operation-not-allowed': 'Email/password authentication is not enabled.',
     'auth/invalid-api-key': 'Invalid Firebase API key. Please check your configuration.',
     'auth/app-deleted': 'Firebase app has been deleted. Please check your configuration.',
+    'auth/popup-closed-by-user': 'Sign-in popup was closed before completing. Please try again.',
+    'auth/cancelled-popup-request': 'Multiple sign-in popups were opened. Please try again.',
+    'auth/popup-blocked': 'Sign-in popup was blocked by your browser. Please allow popups for this site.',
+    'auth/account-exists-with-different-credential': 'An account already exists with the same email but different sign-in method.',
   };
   
   return errorMessages[errorCode] || 'An error occurred. Please try again.';
