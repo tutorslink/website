@@ -31,12 +31,12 @@
 
 ## Step 3: Update Frontend Configuration (5 minutes)
 
-- [ ] Open index.html in your repository
-- [ ] Find line with: `const API_BASE_URL = ...`
+- [ ] Open index.html and apply-as-tutor.html in your repository
+- [ ] Find line with: `const API_BASE_URL = ...` in both files
 - [ ] Replace `https://your-backend-url.railway.app` with your actual Railway URL
-- [ ] Commit and push the change:
+- [ ] Commit and push the changes:
   ```bash
-  git add index.html
+  git add index.html apply-as-tutor.html
   git commit -m "Update backend URL for production"
   git push origin main
   ```

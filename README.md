@@ -189,8 +189,8 @@ Firebase Authentication handles user sign-up and login for the website. Follow t
    - It will look like: `https://your-app.railway.app`
 
 5. **Update frontend configuration:**
-   - Open `index.html`
-   - Find the line: `const API_BASE_URL = ...`
+   - Open `index.html` and `apply-as-tutor.html`
+   - Find the line: `const API_BASE_URL = ...` in both files
    - Update the production URL to your Railway URL:
      ```javascript
      const API_BASE_URL = window.location.hostname === 'localhost' 

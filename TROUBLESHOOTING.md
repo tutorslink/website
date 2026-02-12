@@ -175,7 +175,7 @@ Then open the URL it provides
 **Solution:**
 
 1. **Verify frontend URL configuration:**
-   Check `index.html` has correct `API_BASE_URL`:
+   Check `index.html` and `apply-as-tutor.html` have correct `API_BASE_URL`:
    ```javascript
    const API_BASE_URL = window.location.hostname === 'localhost' 
      ? 'http://localhost:3000' 
@@ -316,7 +316,7 @@ Make sure these files are properly configured:
 - ✅ `firebase-config.js` - Real Firebase values, not placeholders
 - ✅ `.env` (local) - MongoDB URI and other secrets
 - ✅ Railway Variables - MongoDB URI set correctly
-- ✅ `index.html` - Correct API_BASE_URL
+- ✅ `index.html` and `apply-as-tutor.html` - Correct API_BASE_URL
 - ✅ Firebase Console - Authorized domains configured
 
 ## Still Having Issues?
