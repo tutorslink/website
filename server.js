@@ -350,6 +350,11 @@ const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
 const TutorApplication = mongoose.model('TutorApplication', tutorApplicationSchema);
 
 // ============================================
+// Constants
+// ============================================
+const VALID_APPLICATION_STATUSES = ['pending', 'approved', 'rejected'];
+
+// ============================================
 // API Routes
 // ============================================
 
@@ -851,6 +856,123 @@ app.post('/api/tutor-applications', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to submit application',
+      error: error.message
+    });
+  }
+});
+
+// GET /api/tutor-applications - Get tutor applications (Staff/Admin only)
+app.get('/api/tutor-applications', requireStaffOrAdmin, async (req, res) => {
+  try {
+    const { status } = req.query;
+    
+    // Build query filter
+    const query = {};
+    if (status && VALID_APPLICATION_STATUSES.includes(status)) {
+      query.status = status;
+    }
+    
+    // Fetch applications sorted by creation date (newest first)
+    const applications = await TutorApplication.find(query)
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    res.json({
+      success: true,
+      data: applications,
+      count: applications.length
+    });
+  } catch (error) {
+    console.error('Error fetching tutor applications:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch applications',
+      error: error.message
+    });
+  }
+});
+
+// PUT /api/tutor-applications/:id - Update application status (Staff/Admin only)
+app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    // Validate status
+    if (!status || !VALID_APPLICATION_STATUSES.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Must be: pending, approved, or rejected'
+      });
+    }
+    
+    // Update application
+    const application = await TutorApplication.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found'
+      });
+    }
+    
+    // Send notification email if status changed to approved or rejected
+    if (emailTransporter && (status === 'approved' || status === 'rejected')) {
+      try {
+        const subject = status === 'approved' 
+          ? 'Congratulations! Your Tutor Application Has Been Approved'
+          : 'Update on Your Tutor Application';
+        
+        const htmlContent = status === 'approved'
+          ? `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #2e7d32;">Congratulations! 🎉</h2>
+              <p>Dear Applicant,</p>
+              <p>We are pleased to inform you that your tutor application for <strong>${application.subject}</strong> has been <strong>approved</strong>!</p>
+              <p>You can now start teaching on Tutors Link. Our team will contact you via Discord at <strong>${application.discordUsername}</strong> with next steps.</p>
+              <p>Welcome to the Tutors Link family!</p>
+              <br>
+              <p>Best regards,<br>The Tutors Link Team</p>
+            </div>
+          `
+          : `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #c62828;">Application Update</h2>
+              <p>Dear Applicant,</p>
+              <p>Thank you for your interest in becoming a tutor with Tutors Link.</p>
+              <p>After careful review, we are unable to approve your application for <strong>${application.subject}</strong> at this time.</p>
+              <p>We encourage you to reapply in the future or reach out to us if you have any questions.</p>
+              <br>
+              <p>Best regards,<br>The Tutors Link Team</p>
+            </div>
+          `;
+        
+        await emailTransporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: application.email,
+          subject: subject,
+          html: htmlContent
+        });
+      } catch (emailError) {
+        console.error('Error sending status update email:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
+    
+    res.json({
+      success: true,
+      data: application,
+      message: `Application status updated to ${status}`
+    });
+  } catch (error) {
+    console.error('Error updating application status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update application',
       error: error.message
     });
   }
