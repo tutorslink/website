@@ -271,6 +271,12 @@ window.openAuthModal = function(mode) {
   const submitBtn = document.getElementById('auth-submit-btn');
   const toggleText = document.getElementById('auth-toggle-text');
   const toggleLink = document.getElementById('auth-toggle-link');
+  const form = document.getElementById('auth-form');
+  
+  if (!modal || !title || !submitBtn || !toggleText || !toggleLink || !form) {
+    console.error('Auth modal elements not found');
+    return;
+  }
   
   if (mode === 'login') {
     title.textContent = 'Login';
@@ -287,12 +293,14 @@ window.openAuthModal = function(mode) {
   }
   
   modal.style.display = 'flex';
-  document.getElementById('auth-form').reset();
+  form.reset();
 };
 
 window.closeAuthModal = function() {
-  document.getElementById('auth-modal').style.display = 'none';
-  document.getElementById('auth-form').reset();
+  const modal = document.getElementById('auth-modal');
+  const form = document.getElementById('auth-form');
+  if (modal) modal.style.display = 'none';
+  if (form) form.reset();
 };
 
 window.toggleAuthMode = function() {
