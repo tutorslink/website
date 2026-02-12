@@ -347,6 +347,11 @@ const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
 const TutorApplication = mongoose.model('TutorApplication', tutorApplicationSchema);
 
 // ============================================
+// Constants
+// ============================================
+const VALID_APPLICATION_STATUSES = ['pending', 'approved', 'rejected'];
+
+// ============================================
 // API Routes
 // ============================================
 
@@ -805,7 +810,7 @@ app.get('/api/tutor-applications', requireStaffOrAdmin, async (req, res) => {
     
     // Build query filter
     const query = {};
-    if (status && ['pending', 'approved', 'rejected'].includes(status)) {
+    if (status && VALID_APPLICATION_STATUSES.includes(status)) {
       query.status = status;
     }
     
@@ -836,7 +841,7 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
     const { status } = req.body;
     
     // Validate status
-    if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
+    if (!status || !VALID_APPLICATION_STATUSES.includes(status)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid status. Must be: pending, approved, or rejected'

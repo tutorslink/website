@@ -632,11 +632,11 @@ body.sidebar-active .top-banner {
     <h2>🎓 Navigation</h2>
   </div>
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item" onclick="navigateTo('home')">🏠 Home</a>
-    <a class="sidebar-nav-item" onclick="scrollToSection('find-tutor')">🔍 Find a Tutor</a>
-    <a class="sidebar-nav-item" id="sidebar-schedule-btn" onclick="scrollToSection('schedule')" style="display:none;">📅 Schedule</a>
-    <a class="sidebar-nav-item" id="sidebar-staff-portal-btn" onclick="scrollToSection('staff-portal')" style="display:none;">👥 Staff Portal</a>
-    <a class="sidebar-nav-item" id="sidebar-applications-btn" onclick="showApplicationsSection()" style="display:none;">📋 See Applications</a>
+    <a class="sidebar-nav-item" data-nav-action="home">🏠 Home</a>
+    <a class="sidebar-nav-item" data-nav-action="find-tutor">🔍 Find a Tutor</a>
+    <a class="sidebar-nav-item" id="sidebar-schedule-btn" data-nav-action="schedule" style="display:none;">📅 Schedule</a>
+    <a class="sidebar-nav-item" id="sidebar-staff-portal-btn" data-nav-action="staff-portal" style="display:none;">👥 Staff Portal</a>
+    <a class="sidebar-nav-item" id="sidebar-applications-btn" data-nav-action="applications" style="display:none;">📋 See Applications</a>
   </nav>
 </div>
 
@@ -914,10 +914,10 @@ body.sidebar-active .top-banner {
     </div>
     
     <div class="applications-tabs">
-      <button class="tab-button active" onclick="filterApplications('all')">All</button>
-      <button class="tab-button" onclick="filterApplications('pending')">In Process</button>
-      <button class="tab-button" onclick="filterApplications('approved')">Accepted</button>
-      <button class="tab-button" onclick="filterApplications('rejected')">Rejected</button>
+      <button class="tab-button active" data-filter-status="all">All</button>
+      <button class="tab-button" data-filter-status="pending">In Process</button>
+      <button class="tab-button" data-filter-status="approved">Accepted</button>
+      <button class="tab-button" data-filter-status="rejected">Rejected</button>
     </div>
     
     <div class="applications-list" id="applications-list">
@@ -1522,9 +1522,8 @@ function filterApplications(status) {
   // Update tab buttons
   document.querySelectorAll('.tab-button').forEach(btn => {
     btn.classList.remove('active');
-    // Check if this button's onclick matches the current status
-    const onclick = btn.getAttribute('onclick');
-    if (onclick && onclick.includes(`'${status}'`)) {
+    // Check if this button's data attribute matches the current status
+    if (btn.getAttribute('data-filter-status') === status) {
       btn.classList.add('active');
     }
   });
@@ -1696,7 +1695,43 @@ async function updateApplicationStatus(applicationId, newStatus) {
   }
 }
 
-// Expose functions to window for onclick handlers
+// Initialize event listeners after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Sidebar navigation event listeners
+  document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const action = this.getAttribute('data-nav-action');
+      
+      switch(action) {
+        case 'home':
+          navigateTo('home');
+          break;
+        case 'find-tutor':
+          scrollToSection('find-tutor');
+          break;
+        case 'schedule':
+          scrollToSection('schedule');
+          break;
+        case 'staff-portal':
+          scrollToSection('staff-portal');
+          break;
+        case 'applications':
+          showApplicationsSection();
+          break;
+      }
+    });
+  });
+  
+  // Applications tab filter event listeners
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const status = this.getAttribute('data-filter-status');
+      filterApplications(status);
+    });
+  });
+});
+
+// Expose functions to window for cross-module access
 window.navigateTo = navigateTo;
 window.showApplicationsSection = showApplicationsSection;
 window.filterApplications = filterApplications;
