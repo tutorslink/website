@@ -296,11 +296,349 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 .auth-status button {background:#ff00ff; color:#fff; padding:8px 15px; border-radius:8px; border:none; font-weight:600; cursor:pointer; transition:0.3s; margin-left:10px;}
 .auth-status button:hover {background:#ff0; color:#000;}
 
+/* Left Sidebar */
+.left-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+  border-right: 2px solid #ff00ff;
+  box-shadow: 4px 0 20px rgba(255, 0, 255, 0.3);
+  z-index: 998;
+  overflow-y: auto;
+  padding: 20px 0;
+  display: none; /* Hidden by default, shown for authenticated users */
+}
+
+.sidebar-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #333;
+  margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  font-size: 1.3rem;
+  background: linear-gradient(90deg, #ff0, #ff00ff, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.sidebar-nav {
+  padding: 0 15px;
+}
+
+.sidebar-nav-item {
+  display: block;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(255, 0, 255, 0.2);
+  border-color: #ff00ff;
+  transform: translateX(5px);
+}
+
+.sidebar-nav-item.active {
+  background: linear-gradient(135deg, #ff00ff, #00f0ff);
+  border-color: #ff0;
+  font-weight: 700;
+}
+
+/* Adjust main content when sidebar is shown */
+body.sidebar-active {
+  margin-left: 250px;
+}
+
+body.sidebar-active .top-banner {
+  left: 250px;
+  width: calc(100% - 250px);
+}
+
+/* Applications Section */
+#applications-section {
+  background: #0a0a0a;
+  padding: 80px 0;
+  display: none;
+  min-height: 100vh;
+}
+
+.applications-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.applications-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 12px 30px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 2px solid #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tab-button:hover {
+  border-color: #ff00ff;
+  background: rgba(255, 0, 255, 0.1);
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, #ff00ff, #00f0ff);
+  border-color: #ff0;
+  color: #fff;
+}
+
+.applications-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.application-card {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  padding: 25px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  border: 2px solid #333;
+  transition: all 0.3s;
+}
+
+.application-card:hover {
+  border-color: #ff00ff;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.application-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.application-email {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ff0;
+}
+
+.application-status-badge {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: #ff9800;
+  color: #000;
+}
+
+.status-approved {
+  background: #4caf50;
+  color: #fff;
+}
+
+.status-rejected {
+  background: #f44336;
+  color: #fff;
+}
+
+.application-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 15px;
+  border-radius: 8px;
+  border-left: 3px solid #00f0ff;
+}
+
+.detail-label {
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  color: #fff;
+  font-weight: 600;
+}
+
+.application-bio {
+  background: rgba(0, 240, 255, 0.05);
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 4px solid #00f0ff;
+  margin: 15px 0;
+}
+
+.application-bio .detail-label {
+  margin-bottom: 8px;
+}
+
+.application-bio .detail-value {
+  color: #eee;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.application-links {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.link-button {
+  padding: 8px 20px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.2);
+  color: #00f0ff;
+  text-decoration: none;
+  font-weight: 600;
+  border: 2px solid #00f0ff;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.link-button:hover {
+  background: #00f0ff;
+  color: #000;
+}
+
+.application-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  padding: 10px 25px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.action-approve {
+  background: #4caf50;
+  color: #fff;
+}
+
+.action-approve:hover {
+  background: #45a049;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+.action-reject {
+  background: #f44336;
+  color: #fff;
+}
+
+.action-reject:hover {
+  background: #da190b;
+  box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
+}
+
+.action-pending {
+  background: #ff9800;
+  color: #000;
+}
+
+.action-pending:hover {
+  background: #fb8c00;
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.5);
+}
+
+.no-applications {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 1.2rem;
+}
+
 /* Responsive */
-@media(max-width:768px){.steps,.tutor-cards,.tutor-display{flex-direction:column; align-items:center;}}
+@media(max-width:768px){
+  .steps,.tutor-cards,.tutor-display{flex-direction:column; align-items:center;}
+  .left-sidebar {
+    width: 200px;
+  }
+  body.sidebar-active {
+    margin-left: 200px;
+  }
+  body.sidebar-active .top-banner {
+    left: 200px;
+    width: calc(100% - 200px);
+  }
+  .application-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media(max-width:480px){
+  .left-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 2px solid #ff00ff;
+  }
+  body.sidebar-active {
+    margin-left: 0;
+  }
+  body.sidebar-active .top-banner {
+    left: 0;
+    width: 100%;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Left Sidebar Navigation -->
+<div class="left-sidebar" id="left-sidebar">
+  <div class="sidebar-header">
+    <h2>🎓 Navigation</h2>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" onclick="navigateTo('home')">🏠 Home</a>
+    <a class="sidebar-nav-item" onclick="scrollToSection('find-tutor')">🔍 Find a Tutor</a>
+    <a class="sidebar-nav-item" id="sidebar-schedule-btn" onclick="scrollToSection('schedule')" style="display:none;">📅 Schedule</a>
+    <a class="sidebar-nav-item" id="sidebar-staff-portal-btn" onclick="scrollToSection('staff-portal')" style="display:none;">👥 Staff Portal</a>
+    <a class="sidebar-nav-item" id="sidebar-applications-btn" onclick="showApplicationsSection()" style="display:none;">📋 See Applications</a>
+  </nav>
+</div>
 
 <!-- Top Banner with Profile Info -->
 <div class="top-banner">
@@ -568,6 +906,26 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 <div class="tutor-display" id="tutor-list"></div>
 </section>
 
+<!-- Applications Section (Staff/Admin Only) -->
+<section id="applications-section">
+  <div class="container">
+    <div class="applications-header">
+      <h2>📋 Tutor Applications</h2>
+    </div>
+    
+    <div class="applications-tabs">
+      <button class="tab-button active" onclick="filterApplications('all')">All</button>
+      <button class="tab-button" onclick="filterApplications('pending')">In Process</button>
+      <button class="tab-button" onclick="filterApplications('approved')">Accepted</button>
+      <button class="tab-button" onclick="filterApplications('rejected')">Rejected</button>
+    </div>
+    
+    <div class="applications-list" id="applications-list">
+      <div class="no-applications">Loading applications...</div>
+    </div>
+  </div>
+</section>
+
 <!-- Apply as Tutor -->
 <section id="apply" class="apply">
 <h2>Apply as a Tutor</h2>
@@ -791,20 +1149,42 @@ function updateUIForRole(user, userData) {
     if (bannerSignupBtn) bannerSignupBtn.style.display = 'none';
     if (bannerLogoutBtn) bannerLogoutBtn.style.display = 'inline-block';
     
+    // Show left sidebar for all authenticated users
+    const sidebar = document.getElementById('left-sidebar');
+    if (sidebar) {
+      sidebar.style.display = 'block';
+      document.body.classList.add('sidebar-active');
+    }
+    
+    // Show sidebar nav items based on role
+    const sidebarScheduleBtn = document.getElementById('sidebar-schedule-btn');
+    const sidebarStaffPortalBtn = document.getElementById('sidebar-staff-portal-btn');
+    const sidebarApplicationsBtn = document.getElementById('sidebar-applications-btn');
+    
     // Show schedule for students, tutors, admins
     if (role === 'student' || role === 'tutor' || role === 'admin' || role === 'staff') {
       if (scheduleBtn) scheduleBtn.style.display = 'inline-block';
+      if (sidebarScheduleBtn) sidebarScheduleBtn.style.display = 'block';
       document.getElementById('schedule').style.display = 'block';
     }
     
     // Show staff portal only for staff and admin
     if (role === 'staff' || role === 'admin') {
       if (staffPortalBtn) staffPortalBtn.style.display = 'inline-block';
+      if (sidebarStaffPortalBtn) sidebarStaffPortalBtn.style.display = 'block';
+      if (sidebarApplicationsBtn) sidebarApplicationsBtn.style.display = 'block';
       document.getElementById('staff-portal').style.display = 'block';
     }
   } else {
     profileInfo.style.display = 'none';
     currentUserRole = 'guest';
+    
+    // Hide left sidebar
+    const sidebar = document.getElementById('left-sidebar');
+    if (sidebar) {
+      sidebar.style.display = 'none';
+      document.body.classList.remove('sidebar-active');
+    }
     
     // Show login/signup, hide logout
     const bannerLoginBtn = document.getElementById('banner-login-btn');
@@ -818,6 +1198,7 @@ function updateUIForRole(user, userData) {
     // Hide role-based sections
     document.getElementById('schedule').style.display = 'none';
     document.getElementById('staff-portal').style.display = 'none';
+    document.getElementById('applications-section').style.display = 'none';
     const scheduleBtn = document.getElementById('schedule-nav-btn');
     const staffPortalBtn = document.getElementById('staff-portal-nav-btn');
     if (scheduleBtn) scheduleBtn.style.display = 'none';
@@ -1076,6 +1457,238 @@ window.addEventListener('click', (e) => {
     closeAuthModal();
   }
 });
+
+// ============================================
+// Applications Management (Staff/Admin)
+// ============================================
+let currentApplicationFilter = 'all';
+let allApplications = [];
+
+// Navigate to home
+function navigateTo(section) {
+  if (section === 'home') {
+    // Hide applications section, show other sections
+    document.getElementById('applications-section').style.display = 'none';
+    document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Show applications section
+async function showApplicationsSection() {
+  // Hide other main sections
+  document.getElementById('applications-section').style.display = 'block';
+  
+  // Scroll to applications section
+  document.getElementById('applications-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  
+  // Load applications
+  await loadApplications();
+}
+
+// Load applications from API
+async function loadApplications() {
+  try {
+    const currentUser = authModule ? authModule.getCurrentUser() : null;
+    
+    if (!currentUser) {
+      showError('Please login to view applications');
+      return;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/api/tutor-applications`, {
+      headers: {
+        'x-firebase-uid': currentUser.uid
+      }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      allApplications = result.data;
+      renderApplications(currentApplicationFilter);
+    } else {
+      showError(result.message || 'Failed to load applications');
+    }
+  } catch (error) {
+    console.error('Error loading applications:', error);
+    showError('Network error. Please check your connection.');
+  }
+}
+
+// Filter applications
+function filterApplications(status) {
+  currentApplicationFilter = status;
+  
+  // Update tab buttons
+  document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  renderApplications(status);
+}
+
+// Render applications list
+function renderApplications(filter) {
+  const applicationsList = document.getElementById('applications-list');
+  
+  // Filter applications based on status
+  let filteredApplications = allApplications;
+  if (filter !== 'all') {
+    filteredApplications = allApplications.filter(app => app.status === filter);
+  }
+  
+  // Clear list
+  applicationsList.innerHTML = '';
+  
+  if (filteredApplications.length === 0) {
+    applicationsList.innerHTML = '<div class="no-applications">No applications found.</div>';
+    return;
+  }
+  
+  // Render each application
+  filteredApplications.forEach(app => {
+    const applicationCard = createApplicationCard(app);
+    applicationsList.appendChild(applicationCard);
+  });
+}
+
+// Create application card element
+function createApplicationCard(app) {
+  const card = document.createElement('div');
+  card.className = 'application-card';
+  
+  const statusClass = `status-${app.status}`;
+  const statusText = app.status.charAt(0).toUpperCase() + app.status.slice(1);
+  
+  // Format date
+  const date = new Date(app.createdAt);
+  const formattedDate = date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  card.innerHTML = `
+    <div class="application-header">
+      <div class="application-email">${app.email}</div>
+      <span class="application-status-badge ${statusClass}">${statusText}</span>
+    </div>
+    
+    <div class="application-details">
+      <div class="detail-item">
+        <div class="detail-label">Subject</div>
+        <div class="detail-value">${app.subject} (${app.subjectCode})</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Teaching Level</div>
+        <div class="detail-value">${app.teachingLevel}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Examination Board</div>
+        <div class="detail-value">${app.examinationBoard}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Academic Result</div>
+        <div class="detail-value">${app.academicResult}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Teaching Format</div>
+        <div class="detail-value">${app.teachingFormat}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Country</div>
+        <div class="detail-value">${app.country}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Languages</div>
+        <div class="detail-value">${app.languagesSpoken}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Discord</div>
+        <div class="detail-value">${app.discordUsername}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Highest Qualification</div>
+        <div class="detail-value">${app.highestQualification}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Teaching Experience</div>
+        <div class="detail-value">${app.teachingExperience}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Submitted</div>
+        <div class="detail-value">${formattedDate}</div>
+      </div>
+    </div>
+    
+    <div class="application-bio">
+      <div class="detail-label">Professional Bio</div>
+      <div class="detail-value">${app.professionalBio}</div>
+    </div>
+    
+    <div class="application-links">
+      <a href="${app.qualificationDocumentLink}" target="_blank" class="link-button">📄 Qualification Document</a>
+      <a href="${app.teachingVideoLink}" target="_blank" class="link-button">🎥 Teaching Video</a>
+      <a href="${app.academicResultsLink}" target="_blank" class="link-button">📊 Academic Results</a>
+    </div>
+    
+    <div class="application-actions">
+      ${app.status !== 'approved' ? `<button class="action-button action-approve" onclick="updateApplicationStatus('${app._id}', 'approved')">✅ Approve</button>` : ''}
+      ${app.status !== 'rejected' ? `<button class="action-button action-reject" onclick="updateApplicationStatus('${app._id}', 'rejected')">❌ Reject</button>` : ''}
+      ${app.status !== 'pending' ? `<button class="action-button action-pending" onclick="updateApplicationStatus('${app._id}', 'pending')">⏳ Mark as Pending</button>` : ''}
+    </div>
+  `;
+  
+  return card;
+}
+
+// Update application status
+async function updateApplicationStatus(applicationId, newStatus) {
+  if (!confirm(`Are you sure you want to ${newStatus} this application?`)) {
+    return;
+  }
+  
+  try {
+    const currentUser = authModule ? authModule.getCurrentUser() : null;
+    
+    if (!currentUser) {
+      showError('Please login to update applications');
+      return;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/api/tutor-applications/${applicationId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-firebase-uid': currentUser.uid
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showSuccess(`Application ${newStatus} successfully!`);
+      // Reload applications
+      await loadApplications();
+    } else {
+      showError(result.message || 'Failed to update application');
+    }
+  } catch (error) {
+    console.error('Error updating application:', error);
+    showError('Network error. Please check your connection.');
+  }
+}
+
+// Expose functions to window for onclick handlers
+window.navigateTo = navigateTo;
+window.showApplicationsSection = showApplicationsSection;
+window.filterApplications = filterApplications;
+window.updateApplicationStatus = updateApplicationStatus;
+
 </script>
 
 <script type="module" src="./main.js">              
