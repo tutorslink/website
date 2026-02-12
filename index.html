@@ -1522,8 +1522,12 @@ function filterApplications(status) {
   // Update tab buttons
   document.querySelectorAll('.tab-button').forEach(btn => {
     btn.classList.remove('active');
+    // Check if this button's onclick matches the current status
+    const onclick = btn.getAttribute('onclick');
+    if (onclick && onclick.includes(`'${status}'`)) {
+      btn.classList.add('active');
+    }
   });
-  event.target.classList.add('active');
   
   renderApplications(status);
 }
@@ -1636,11 +1640,20 @@ function createApplicationCard(app) {
     </div>
     
     <div class="application-actions">
-      ${app.status !== 'approved' ? `<button class="action-button action-approve" onclick="updateApplicationStatus('${app._id}', 'approved')">✅ Approve</button>` : ''}
-      ${app.status !== 'rejected' ? `<button class="action-button action-reject" onclick="updateApplicationStatus('${app._id}', 'rejected')">❌ Reject</button>` : ''}
-      ${app.status !== 'pending' ? `<button class="action-button action-pending" onclick="updateApplicationStatus('${app._id}', 'pending')">⏳ Mark as Pending</button>` : ''}
+      ${app.status !== 'approved' ? `<button class="action-button action-approve" data-app-id="${app._id}" data-action="approved">✅ Approve</button>` : ''}
+      ${app.status !== 'rejected' ? `<button class="action-button action-reject" data-app-id="${app._id}" data-action="rejected">❌ Reject</button>` : ''}
+      ${app.status !== 'pending' ? `<button class="action-button action-pending" data-app-id="${app._id}" data-action="pending">⏳ Mark as Pending</button>` : ''}
     </div>
   `;
+  
+  // Add event listeners to action buttons
+  card.querySelectorAll('.action-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const appId = this.getAttribute('data-app-id');
+      const action = this.getAttribute('data-action');
+      updateApplicationStatus(appId, action);
+    });
+  });
   
   return card;
 }

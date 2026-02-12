@@ -867,8 +867,8 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
         const htmlContent = status === 'approved'
           ? `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #00ff00;">Congratulations! 🎉</h2>
-              <p>Dear ${application.email},</p>
+              <h2 style="color: #2e7d32;">Congratulations! 🎉</h2>
+              <p>Dear Applicant,</p>
               <p>We are pleased to inform you that your tutor application for <strong>${application.subject}</strong> has been <strong>approved</strong>!</p>
               <p>You can now start teaching on Tutors Link. Our team will contact you via Discord at <strong>${application.discordUsername}</strong> with next steps.</p>
               <p>Welcome to the Tutors Link family!</p>
@@ -878,8 +878,8 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
           `
           : `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #ff6b6b;">Application Update</h2>
-              <p>Dear ${application.email},</p>
+              <h2 style="color: #c62828;">Application Update</h2>
+              <p>Dear Applicant,</p>
               <p>Thank you for your interest in becoming a tutor with Tutors Link.</p>
               <p>After careful review, we are unable to approve your application for <strong>${application.subject}</strong> at this time.</p>
               <p>We encourage you to reapply in the future or reach out to us if you have any questions.</p>
