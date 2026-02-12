@@ -4,6 +4,38 @@ Connect with tutors worldwide. Free for students, prices set by tutors. All paym
 
 > **Note:** The frontend has been removed for a fresh restart. This repository currently contains only the backend API.
 
+## 💡 Building a New Frontend
+
+When you're ready to build a new frontend, here are some recommended approaches:
+
+### Option 1: Modern JavaScript Framework
+- **React** with Vite or Next.js for a rich, interactive experience
+- **Vue.js** with Nuxt for simpler syntax and great developer experience
+- **Svelte/SvelteKit** for minimal bundle size and excellent performance
+
+### Option 2: Static Site Generators
+- **Astro** - Great for content-heavy sites with minimal JavaScript
+- **11ty** - Simple, flexible static site generator
+- **Hugo** - Fast static site generation
+
+### Option 3: Full-Stack Framework
+- **Next.js** - React with server-side rendering and API routes
+- **Remix** - Full-stack React framework with excellent data handling
+- **SvelteKit** - Full-stack Svelte framework
+
+### Integration Guide
+1. Set up your chosen framework in a new repository or folder
+2. Configure API calls to point to: `https://your-railway-app.railway.app`
+3. Implement authentication (Firebase, Auth0, NextAuth, etc.)
+4. Build the UI components for:
+   - Tutor browsing and filtering
+   - Booking system
+   - Support contact form
+   - Staff portal (if needed)
+5. Deploy to Vercel, Netlify, or GitHub Pages
+
+The backend API documented below is fully functional and ready to integrate with your new frontend.
+
 ## 🚀 API Capabilities
 
 The backend provides the following functionality through REST API endpoints:
