@@ -100,6 +100,39 @@ function decrypt(encryptedText) {
 // Mongoose Schemas and Models
 // ============================================
 
+// User Schema with Role System
+const userSchema = new mongoose.Schema({
+  firebaseUid: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
+  role: {
+    type: String,
+    default: 'guest',
+    enum: ['guest', 'student', 'tutor', 'staff', 'admin']
+  },
+  displayName: {
+    type: String,
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 // Tutor Schema
 const tutorSchema = new mongoose.Schema({
   name: {
@@ -307,6 +340,7 @@ const tutorApplicationSchema = new mongoose.Schema({
 });
 
 // Create models from schemas
+const User = mongoose.model('User', userSchema);
 const Tutor = mongoose.model('Tutor', tutorSchema);
 const Booking = mongoose.model('Booking', bookingSchema);
 const SupportMessage = mongoose.model('SupportMessage', supportMessageSchema);
@@ -315,6 +349,129 @@ const TutorApplication = mongoose.model('TutorApplication', tutorApplicationSche
 // ============================================
 // API Routes
 // ============================================
+
+// Middleware to check if user has staff or admin role
+async function requireStaffOrAdmin(req, res, next) {
+  try {
+    const firebaseUid = req.headers['x-firebase-uid'];
+    
+    if (!firebaseUid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    
+    const user = await User.findOne({ firebaseUid });
+    
+    if (!user || (user.role !== 'staff' && user.role !== 'admin')) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Staff or admin role required.'
+      });
+    }
+    
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Authentication error'
+    });
+  }
+}
+
+// POST /api/users/register - Register or update user
+app.post('/api/users/register', async (req, res) => {
+  try {
+    const { firebaseUid, email, displayName } = req.body;
+    
+    if (!firebaseUid || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Firebase UID and email are required'
+      });
+    }
+    
+    // Check if user exists
+    let user = await User.findOne({ firebaseUid });
+    
+    if (user) {
+      // Update existing user
+      user.email = email;
+      user.displayName = displayName || user.displayName;
+      user.updatedAt = Date.now();
+      await user.save();
+    } else {
+      // Create new user with default 'guest' role
+      user = new User({
+        firebaseUid,
+        email,
+        displayName,
+        role: 'guest'
+      });
+      await user.save();
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName
+      }
+    });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to register user',
+      error: error.message
+    });
+  }
+});
+
+// GET /api/users/me - Get current user info
+app.get('/api/users/me', async (req, res) => {
+  try {
+    const firebaseUid = req.headers['x-firebase-uid'];
+    
+    if (!firebaseUid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    
+    const user = await User.findOne({ firebaseUid });
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user',
+      error: error.message
+    });
+  }
+});
 
 // GET /api/tutors - Fetch all tutors
 // Note: Consider adding rate limiting in production (e.g., express-rate-limit)
@@ -336,8 +493,8 @@ app.get('/api/tutors', async (req, res) => {
   }
 });
 
-// POST /api/tutors - Add a new tutor (Staff Portal)
-app.post('/api/tutors', async (req, res) => {
+// POST /api/tutors - Add a new tutor (Staff Portal - Protected)
+app.post('/api/tutors', requireStaffOrAdmin, async (req, res) => {
   try {
     const { name, subjects, price, timezone, languages, category, availability } = req.body;
     
