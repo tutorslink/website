@@ -142,23 +142,39 @@ monitorAuthState((user) => {
 
 console.log('Firebase Auth loaded via main.js');
 
-// Auth state bootstrapping 
-
-monitorAuthState((user) => {
+// Auth state bootstrapping with role management
+monitorAuthState(async (user) => {
   if (user) {
     console.log("✅ Logged in:", user.uid);
 
     authSection.style.display = "none";
     appSection.style.display = "block";
 
-    // Safe to access currentUser now
-    // const currentUser = getCurrentUser();
+    // Register/fetch user role
+    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
+    const userData = await window.registerUser?.(user.uid, user.email, displayName);
+    
+    if (!userData) {
+      // Fallback: fetch user data if register fails
+      const fetchedData = await window.fetchUserRole?.(user.uid);
+      if (fetchedData) {
+        window.updateUIForRole?.(user, fetchedData);
+      } else {
+        // Default to guest if all fails
+        window.updateUIForRole?.(user, { role: 'guest', email: user.email, displayName });
+      }
+    } else {
+      window.updateUIForRole?.(user, userData);
+    }
 
   } else {
     console.log("🚪 Logged out");
 
     authSection.style.display = "block";
     appSection.style.display = "none";
+    
+    // Update UI for logged out state
+    window.updateUIForRole?.(null, null);
   }
 });
 
