@@ -13,6 +13,9 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Constants
+const MIN_DISPLAY_NAME_LENGTH = 2;
+
 // Middleware
 app.use(cors()); // Allow cross-origin requests from GitHub Pages
 app.use(express.json()); // Parse JSON request bodies
@@ -488,10 +491,10 @@ app.put('/api/users/:uid/display-name', async (req, res) => {
       });
     }
     
-    if (!displayName || displayName.trim().length < 2) {
+    if (!displayName || displayName.trim().length < MIN_DISPLAY_NAME_LENGTH) {
       return res.status(400).json({
         success: false,
-        message: 'Display name must be at least 2 characters'
+        message: `Display name must be at least ${MIN_DISPLAY_NAME_LENGTH} characters`
       });
     }
     
