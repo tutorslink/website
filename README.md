@@ -1,38 +1,42 @@
-# Tutors Link - Full-Stack Web Application
+# Tutors Link - Backend API
 
 Connect with tutors worldwide. Free for students, prices set by tutors. All payments secure through Tutors Link.
 
-## 🚀 Features
+> **Note:** The frontend has been removed for a fresh restart. This repository currently contains only the backend API.
 
-- **Student Features:**
+## 🚀 API Capabilities
+
+The backend provides the following functionality through REST API endpoints:
+
+- **Tutor Management:**
   - Browse available tutors by category
-  - Book demo classes
+  - Add new tutors (for staff)
+  - Retrieve tutor details
+
+- **Booking System:**
+  - Create booking requests
+  - Store booking information in database
+
+- **Support System:**
   - Submit support messages
-  - Secure payment processing
+  - Discord webhook notifications for support requests
 
-- **Tutor Features:**
-  - Apply to become a tutor
-  - Set your own prices
-  - Manage availability
-
-- **Staff Portal:**
-  - Add and manage tutors
-  - View booking requests
-  - Receive support messages via Discord
+- **Health Monitoring:**
+  - Check server status
+  - Monitor MongoDB connection
 
 ## 🏗️ Architecture
 
-- **Frontend:** Static HTML/CSS/JS hosted on GitHub Pages
+- **Frontend:** Removed - ready for fresh implementation
 - **Backend:** Node.js/Express API hosted on Railway
 - **Database:** MongoDB Atlas (free tier with GitHub Student Pack)
-- **Authentication:** Firebase Authentication (client-side)
+- **Authentication:** Ready to integrate with new frontend
 
 ## 📋 Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
 - MongoDB Atlas account (free with [GitHub Student Developer Pack](https://education.github.com/pack))
 - Railway account (for backend deployment)
-- Firebase account (free) for authentication
 - Discord webhook URL (optional, for support notifications)
 
 ## 🎓 Setting Up MongoDB Atlas (GitHub Student Pack)
@@ -78,54 +82,16 @@ Connect with tutors worldwide. Free for students, prices set by tutors. All paym
    - Replace `<password>` with your actual password
    - Add a database name at the end: `mongodb+srv://username:password@cluster.mongodb.net/tutorslink?retryWrites=true&w=majority`
 
-## 🔥 Setting Up Firebase Authentication
+## 🔥 Frontend Setup
 
-Firebase Authentication handles user sign-up and login for the website. Follow these steps to configure it:
+**The frontend has been removed for a fresh restart.** When you're ready to build a new frontend:
 
-### Quick Setup
+1. Choose your preferred framework (React, Vue, Next.js, etc.)
+2. Connect to the existing backend API at the endpoints listed below
+3. Implement authentication as needed for your chosen stack
+4. Deploy to your preferred hosting platform (GitHub Pages, Vercel, Netlify, etc.)
 
-1. **Create a Firebase project:**
-   - Go to [Firebase Console](https://console.firebase.google.com/)
-   - Click "Add project"
-   - Enter project name (e.g., "Tutors Link")
-   - Follow the wizard to create your project
-
-2. **Enable Email/Password authentication:**
-   - In Firebase Console, go to "Authentication" > "Sign-in method"
-   - Enable "Email/Password"
-   - Save changes
-
-3. **Add authorized domains:**
-   - In "Authentication" > "Settings" > "Authorized domains"
-   - Add your domains:
-     - `tutorslink.github.io` (or your GitHub Pages domain)
-     - `localhost` (for local testing)
-   - This prevents CORS errors
-
-4. **Register your web app:**
-   - Go to Project Settings (gear icon)
-   - Under "Your apps", click Web icon (`</>`)
-   - Register app with a nickname
-   - Copy the Firebase configuration
-
-5. **Update firebase-config.js:**
-   - Open `firebase-config.js` in the repository
-   - Replace placeholder values with your Firebase config:
-     ```javascript
-     const firebaseConfig = {
-       apiKey: "AIzaSyC...",
-       authDomain: "your-project.firebaseapp.com",
-       projectId: "your-project",
-       storageBucket: "your-project.appspot.com",
-       messagingSenderId: "123456789012",
-       appId: "1:123456789012:web:abc..."
-     };
-     ```
-   - Commit and push the changes
-
-**Note:** Firebase credentials are safe to commit - they're public identifiers, not secrets. Security comes from Firebase rules and authorized domains.
-
-**For detailed instructions, see [FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
+The backend API is fully functional and ready to support your new frontend.
 
 ## 🛠️ Local Development Setup
 
@@ -159,8 +125,8 @@ Firebase Authentication handles user sign-up and login for the website. Follow t
 
 6. **Open your browser:**
    - Backend API: http://localhost:3000
-   - Frontend: http://localhost:3000 (serves index.html)
    - Test the API: http://localhost:3000/api/health
+   - API endpoints are ready for frontend integration
 
 ## 🚢 Deploying to Railway (Backend)
 
@@ -198,18 +164,19 @@ Firebase Authentication handles user sign-up and login for the website. Follow t
        : 'https://your-app.railway.app';
      ```
 
-## 📄 Deploying Frontend to GitHub Pages
+## 📄 Frontend Deployment
 
-1. **Enable GitHub Pages:**
-   - Go to your repository settings
-   - Navigate to "Pages" section
-   - Under "Source", select "main" branch
-   - Select "/" (root) folder
-   - Click "Save"
+The frontend has been removed. When you build your new frontend:
 
-2. **Access your website:**
-   - Your site will be available at: `https://tutorslink.github.io/website/`
-   - May take a few minutes for the first deployment
+1. Choose your preferred hosting platform:
+   - **GitHub Pages**: Great for static sites
+   - **Vercel**: Excellent for Next.js, React, Vue
+   - **Netlify**: Works with any static site generator
+   - **Railway**: Can host frontend alongside or separately from backend
+
+2. Configure your frontend to connect to the Railway backend API
+3. Handle CORS by ensuring your frontend domain is allowed (CORS is currently configured for all origins)
+4. Deploy and test the integration
 
 ## 🔌 API Endpoints
 
@@ -282,15 +249,7 @@ These are configured in Railway dashboard under "Variables" tab:
 | `PORT` | Server port (auto-provided by Railway) | No (Railway sets this) |
 | `DISCORD_WEBHOOK_URL` | Discord webhook for support notifications | No |
 
-### Frontend Configuration (Firebase)
-
-Firebase configuration is **NOT** set in Railway environment variables. Instead:
-
-- Edit `firebase-config.js` directly with your Firebase credentials
-- These values are safe to commit to GitHub (they're public identifiers)
-- See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for instructions
-
-**Why not use environment variables?** The frontend is static HTML/CSS/JS hosted on GitHub Pages, which doesn't have access to server-side environment variables. Firebase config must be in the client-side JavaScript code.
+**Note:** When you build your new frontend with authentication, configure it according to your chosen authentication provider's requirements.
 
 ## 📦 Dependencies
 
@@ -299,14 +258,14 @@ Firebase configuration is **NOT** set in Railway environment variables. Instead:
 - **cors** - Enable Cross-Origin Resource Sharing
 - **dotenv** - Load environment variables from .env file
 
-## 🎨 Frontend Features
+## 🎨 Backend API Features
 
-- **Modern UI:** Gradient colors, hover effects, smooth transitions
-- **Responsive Design:** Works on desktop, tablet, and mobile
-- **Real-time Updates:** Fetches tutors from database on page load
-- **Booking Modal:** Simple popup form for booking demo classes
-- **Loading States:** Visual feedback during API calls
-- **Error Handling:** User-friendly error messages
+- **RESTful API:** Clean, well-documented endpoints
+- **MongoDB Integration:** Efficient data storage and retrieval
+- **CORS Enabled:** Ready for cross-origin frontend requests
+- **Health Checks:** Monitor server and database status
+- **Discord Integration:** Support notifications via webhook
+- **Error Handling:** Comprehensive error responses
 
 ## 🔒 Security Features
 
