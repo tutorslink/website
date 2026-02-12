@@ -20,8 +20,9 @@ header {
   padding:120px 20px;
   overflow:hidden;
 }
-header h1 {font-size:3rem; margin-bottom:20px;}
-header p {font-size:1.2rem; margin-bottom:30px;}
+header h1 {font-size:3rem; margin-bottom:20px; position:relative; z-index:10;}
+header p {font-size:1.2rem; margin-bottom:30px; position:relative; z-index:10;}
+.cta-buttons {position:relative; z-index:10;}
 .cta-buttons button {
   background:#fff; color:#000; font-weight:700; padding:12px 30px; margin:0 10px; border-radius:12px;
   transition:0.3s;
@@ -30,7 +31,7 @@ header p {font-size:1.2rem; margin-bottom:30px;}
 
 /* Abstract decorations */
 header::before, header::after {
-  content:''; position:absolute; border-radius:50%; opacity:0.2;
+  content:''; position:absolute; border-radius:50%; opacity:0.2; z-index:1;
 }
 header::before {width:400px; height:400px; background:#ff0; top:-100px; left:-150px;}
 header::after {width:600px; height:600px; background:#ff00ff; bottom:-200px; right:-200px;}
