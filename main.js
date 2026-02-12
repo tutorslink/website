@@ -132,11 +132,3 @@ monitorAuthState((user) => {
   }
 });
 
-
-//  protect dashboard page  (logged out user can't access)
-    if (window.location.pathname.includes('dashboard')) {
-      window.location.href = '/index.html';
-    }
-  }
-});
-
