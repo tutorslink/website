@@ -5,14 +5,15 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // Firebase configuration 
-// REPLACE THESE PLACEHOLDER VALUES WITH YOUR ACTUAL FIREBASE CONFIG
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBnwIVmod25Y-sZVYRnMif6eJVhqXXRvRA",
   authDomain: "tutors-link.firebaseapp.com",
   projectId: "tutors-link",
   storageBucket: "tutors-link.firebasestorage.app",
   messagingSenderId: "495466917430",
-  appId: "1:495466917430:web:a6a01860f14eed63b07297"
+  appId: "1:495466917430:web:a6a01860f14eed63b07297",
+  measurementId: "G-DE8Z396DJQ"
 };
 
 // Validate configuration - check all fields, not just API key
