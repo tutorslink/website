@@ -473,6 +473,61 @@ app.get('/api/users/me', async (req, res) => {
   }
 });
 
+// PUT /api/users/:uid/display-name - Update user display name
+app.put('/api/users/:uid/display-name', async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const firebaseUid = req.headers['x-firebase-uid'];
+    const { displayName } = req.body;
+    
+    // Verify the user is updating their own profile
+    if (!firebaseUid || firebaseUid !== uid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+    
+    if (!displayName || displayName.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Display name must be at least 2 characters'
+      });
+    }
+    
+    const user = await User.findOneAndUpdate(
+      { firebaseUid },
+      { displayName: displayName.trim() },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName
+      },
+      message: 'Display name updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating display name:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update display name',
+      error: error.message
+    });
+  }
+});
+
 // GET /api/tutors - Fetch all tutors
 // Note: Consider adding rate limiting in production (e.g., express-rate-limit)
 // to prevent abuse of this endpoint
