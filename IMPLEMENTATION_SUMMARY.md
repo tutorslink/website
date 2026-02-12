@@ -1,5 +1,7 @@
 # Implementation Summary: Full-Stack Transformation
 
+> **⚠️ OUTDATED:** This document describes the previous frontend implementation that has been deleted. It's kept for historical reference only. The backend described here is still active and functional.
+
 ## Overview
 Successfully transformed the static Tutors Link website into a full-stack web application with Node.js/Express backend and MongoDB database.
 

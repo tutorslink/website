@@ -1,5 +1,7 @@
 # Firebase Authentication Setup Guide
 
+> **⚠️ OUTDATED:** This guide was for the previous frontend that has been deleted. It's kept for reference purposes only. When building your new frontend, you can use this as a reference if you choose Firebase for authentication, or select a different authentication provider.
+
 This guide will help you configure Firebase Authentication for the Tutors Link website.
 
 ## Overview

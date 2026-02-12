@@ -1,5 +1,7 @@
 # Changes Summary
 
+> **⚠️ OUTDATED:** This document describes changes to the previous frontend that has been deleted. It's kept for historical reference only.
+
 ## Overview
 Successfully transformed the Tutors Link static website into a full-stack web application while maintaining the original aesthetic and keeping the code beginner-friendly.
 

@@ -1,5 +1,7 @@
 # Deployment Checklist
 
+> **⚠️ OUTDATED:** This checklist was for deploying the previous frontend that has been deleted. For backend deployment instructions, see the current README.md. When you build a new frontend, you'll need to create a new deployment process for it.
+
 ## Before You Deploy
 
 - [ ] Read the complete README.md file
