@@ -13,6 +13,9 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Constants
+const MIN_DISPLAY_NAME_LENGTH = 2;
+
 // Middleware
 app.use(cors()); // Allow cross-origin requests from GitHub Pages
 app.use(express.json()); // Parse JSON request bodies
@@ -473,6 +476,61 @@ app.get('/api/users/me', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch user',
+      error: error.message
+    });
+  }
+});
+
+// PUT /api/users/:uid/display-name - Update user display name
+app.put('/api/users/:uid/display-name', async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const firebaseUid = req.headers['x-firebase-uid'];
+    const { displayName } = req.body;
+    
+    // Verify the user is updating their own profile
+    if (!firebaseUid || firebaseUid !== uid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+    
+    if (!displayName || displayName.trim().length < MIN_DISPLAY_NAME_LENGTH) {
+      return res.status(400).json({
+        success: false,
+        message: `Display name must be at least ${MIN_DISPLAY_NAME_LENGTH} characters`
+      });
+    }
+    
+    const user = await User.findOneAndUpdate(
+      { firebaseUid },
+      { displayName: displayName.trim() },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName
+      },
+      message: 'Display name updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating display name:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update display name',
       error: error.message
     });
   }

@@ -128,21 +128,6 @@ window.handleLogout = async function () {
 // ===============================
 // Auth State Listener
 // ===============================
-monitorAuthState((user) => {
-  const status = document.getElementById('auth-status');
-  const email = document.getElementById('user-email-display');
-
-  if (user) {
-    email.textContent = `Welcome, ${user.email}`;
-    status.style.display = 'block';
-  } else {
-    status.style.display = 'none';
-  }
-});
-
-console.log('Firebase Auth loaded via main.js');
-
-// Auth state bootstrapping with role management
 monitorAuthState(async (user) => {
   if (user) {
     console.log("✅ Logged in:", user.uid);

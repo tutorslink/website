@@ -9,7 +9,8 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // ============================================
@@ -95,6 +96,26 @@ export async function logout() {
       success: false,
       error: error.code,
       message: 'Failed to log out. Please try again.'
+    };
+  }
+}
+
+// ============================================
+// Send Password Reset Email
+// ============================================
+export async function resetPassword(email) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return {
+      success: true,
+      message: 'Password reset email sent successfully!'
+    };
+  } catch (error) {
+    console.error('Password reset error:', error);
+    return {
+      success: false,
+      error: error.code,
+      message: getErrorMessage(error.code)
     };
   }
 }
