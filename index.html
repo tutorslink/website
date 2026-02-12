@@ -264,8 +264,8 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 // For local development: http://localhost:3000
 // For production: https://tutorslink.me
 const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api'
-    : '/api';
+    ? 'http://localhost:3000'
+    : '';
 
 
 // ============================================
@@ -400,7 +400,7 @@ tutorForm.addEventListener('submit', async (e) => {
   };
   
   try {
-    const response = await fetch(`${API_BASE_URL}/tutors`, {
+    const response = await fetch(`${API_BASE_URL}/api/tutors`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -537,7 +537,7 @@ async function handleBookingSubmit(e) {
   };
   
   try {
-    const response = await fetch(`${API_BASE_URL}/bookings`, {
+    const response = await fetch(`${API_BASE_URL}/api/bookings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
