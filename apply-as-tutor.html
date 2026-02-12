@@ -418,6 +418,13 @@ button:disabled {
 <script type="module">
 import { getCurrentUser, monitorAuthState } from './auth.js';
 
+// Configuration - API Base URL
+// For local development: http://localhost:3000
+// For production: https://tutorslink.up.railway.app
+const API_BASE_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3000'
+  : 'https://tutorslink.up.railway.app';
+
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', () => {
   // Use monitorAuthState to wait for Firebase to initialize
@@ -451,11 +458,6 @@ document.getElementById('tutorApplicationForm').addEventListener('submit', async
   const submitBtn = document.getElementById('submitBtn');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Submitting...';
-
-  // Determine API base URL
-  const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000'
-    : 'https://tutorslink.up.railway.app';
 
   // Get form data
   const formData = {
