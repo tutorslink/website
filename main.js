@@ -1,5 +1,5 @@
 // main.js
-import { signup, login, logout, monitorAuthState, getCurrentUser } from './auth.js';
+import { signup, login, logout, monitorAuthState, getCurrentUser, signInWithGoogle } from './auth.js';
 
 // Track mode
 let currentAuthMode = 'login';
@@ -86,6 +86,36 @@ authForm.addEventListener('submit', async (e) => {
     btn.textContent = oldText;
   }
 });
+
+// ===============================
+// Handle Google Sign In
+// ===============================
+const googleSignInBtn = document.getElementById('google-signin-btn');
+if (googleSignInBtn) {
+  googleSignInBtn.addEventListener('click', async () => {
+    const btn = googleSignInBtn;
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = 'Signing in...';
+
+    try {
+      const result = await signInWithGoogle();
+      
+      if (result.success) {
+        alert(result.message);
+        closeAuthModal();
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error. Try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  });
+}
 
 // ===============================
 // Logout

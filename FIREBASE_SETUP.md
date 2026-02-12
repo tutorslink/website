@@ -31,6 +31,16 @@ The website uses Firebase Authentication (Modular SDK v10+) for user sign-up and
 5. Enable the **first toggle** (Email/Password) - keep "Email link" disabled
 6. Click "Save"
 
+### Step 2.1: Enable Google Authentication
+
+1. While still in the "Sign-in method" tab
+2. Click on "Google" in the list of providers
+3. Enable the toggle switch at the top
+4. Select a "Project support email" from the dropdown (this is required)
+5. Click "Save"
+
+**Note:** Google sign-in is now enabled! Users will be able to sign in using their Google accounts.
+
 ### Step 3: Configure Authorized Domains
 
 **IMPORTANT:** This step is critical to prevent CORS errors!
