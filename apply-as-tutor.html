@@ -416,20 +416,21 @@ button:disabled {
 </div>
 
 <script type="module">
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser, monitorAuthState } from './auth.js';
 
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', () => {
-  const user = getCurrentUser();
-  
-  if (!user) {
-    document.getElementById('authRequired').style.display = 'block';
-    document.getElementById('tutorApplicationForm').style.display = 'none';
-  } else {
-    document.getElementById('authRequired').style.display = 'none';
-    document.getElementById('tutorApplicationForm').style.display = 'block';
-    document.getElementById('email').value = user.email;
-  }
+  // Use monitorAuthState to wait for Firebase to initialize
+  monitorAuthState((user) => {
+    if (!user) {
+      document.getElementById('authRequired').style.display = 'block';
+      document.getElementById('tutorApplicationForm').style.display = 'none';
+    } else {
+      document.getElementById('authRequired').style.display = 'none';
+      document.getElementById('tutorApplicationForm').style.display = 'block';
+      document.getElementById('email').value = user.email;
+    }
+  });
 });
 
 // Character counter for bio
