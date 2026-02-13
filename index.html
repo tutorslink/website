@@ -8,7 +8,7 @@
 <style>
 /* Base Reset */
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
-body {background:#000; color:#fff; overflow-x:hidden;}
+body {background:#000; color:#fff; overflow-x:hidden; padding-top: 70px;}
 a, button {text-decoration:none; color:inherit; cursor:pointer;}
 .container {max-width:1200px; margin:0 auto; padding:0 20px;}
 
@@ -70,11 +70,14 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 .top-banner {
   background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   padding: 15px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 999;
   box-shadow: 0 4px 20px rgba(255, 0, 255, 0.3);
   border-bottom: 2px solid #ff00ff;
+  transition: left 0.3s ease, width 0.3s ease;
 }
 .banner-content {
   max-width: 1400px;
@@ -133,6 +136,28 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
   background: #ff00ff;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 0, 255, 0.5);
+}
+
+/* Hamburger Menu Toggle (Mobile) */
+.sidebar-toggle {
+  display: none;
+  background: rgba(255, 0, 255, 0.2);
+  border: 2px solid #ff00ff;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 0, 255, 0.4);
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
 }
 
 /* Staff Portal */
@@ -619,16 +644,30 @@ body.sidebar-active .top-banner {
   }
 }
 @media(max-width:480px){
+  .sidebar-toggle {
+    display: block;
+  }
+  
   .left-sidebar {
     width: 100%;
-    height: auto;
-    position: relative;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -100%;
     border-right: none;
-    border-bottom: 2px solid #ff00ff;
+    border-bottom: none;
+    transition: left 0.3s ease;
+    z-index: 1000;
   }
+  
+  .left-sidebar.mobile-open {
+    left: 0;
+  }
+  
   body.sidebar-active {
     margin-left: 0;
   }
+  
   body.sidebar-active .top-banner {
     left: 0;
     width: 100%;
@@ -638,17 +677,20 @@ body.sidebar-active .top-banner {
 </head>
 <body>
 
+<!-- Hamburger Menu Toggle (Mobile) -->
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle navigation menu">☰</button>
+
 <!-- Left Sidebar Navigation -->
 <div class="left-sidebar" id="left-sidebar">
   <div class="sidebar-header">
     <h2>🎓 Navigation</h2>
   </div>
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item" data-nav-action="home">🏠 Home</a>
-    <a class="sidebar-nav-item" data-nav-action="find-tutor">🔍 Find a Tutor</a>
-    <a class="sidebar-nav-item" id="sidebar-schedule-btn" data-nav-action="schedule" style="display:none;">📅 Schedule</a>
-    <a class="sidebar-nav-item" id="sidebar-staff-portal-btn" data-nav-action="staff-portal" style="display:none;">👥 Staff Portal</a>
-    <a class="sidebar-nav-item" id="sidebar-applications-btn" data-nav-action="applications" style="display:none;">📋 See Applications</a>
+    <a href="#" class="sidebar-nav-item" data-nav-action="home">🏠 Home</a>
+    <a href="#" class="sidebar-nav-item" data-nav-action="find-tutor">🔍 Find a Tutor</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-schedule-btn" data-nav-action="schedule" style="display:none;">📅 Schedule</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-staff-portal-btn" data-nav-action="staff-portal" style="display:none;">👥 Staff Portal</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-applications-btn" data-nav-action="applications" style="display:none;">📋 See Applications</a>
   </nav>
 </div>
 
@@ -1351,9 +1393,14 @@ function updateUIForRole(user, userData) {
     
     // Show left sidebar for all authenticated users
     const sidebar = document.getElementById('left-sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
     if (sidebar) {
       sidebar.style.display = 'block';
       document.body.classList.add('sidebar-active');
+    }
+    // Show hamburger toggle button on mobile for authenticated users
+    if (sidebarToggle) {
+      sidebarToggle.style.display = 'block';
     }
     
     // Show sidebar nav items based on role
@@ -1382,9 +1429,14 @@ function updateUIForRole(user, userData) {
     // Show login/signup, hide profile and logout
     // Hide left sidebar
     const sidebar = document.getElementById('left-sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
     if (sidebar) {
       sidebar.style.display = 'none';
       document.body.classList.remove('sidebar-active');
+    }
+    // Hide hamburger toggle button for unauthenticated users
+    if (sidebarToggle) {
+      sidebarToggle.style.display = 'none';
     }
     
     // Show login/signup, hide logout
@@ -1664,21 +1716,72 @@ window.addEventListener('click', (e) => {
 // ============================================
 // Applications Management (Staff/Admin)
 // ============================================
+
+// HTML escaping utility to prevent XSS attacks
+function escapeHtml(unsafe) {
+  if (unsafe === null || unsafe === undefined) {
+    return '';
+  }
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Validate URL to prevent javascript: and data: URLs
+function isValidUrl(url) {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    // Only allow http and https protocols
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false;
+    }
+    // Reject localhost and private IP ranges to prevent SSRF
+    const hostname = parsed.hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
+      return false;
+    }
+    // Check for private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+    const ipPattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+    const match = hostname.match(ipPattern);
+    if (match) {
+      const [, a, b] = match.map(Number);
+      if (a === 10 || a === 127 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) {
+        return false;
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 let currentApplicationFilter = 'all';
 let allApplications = [];
 
-// Navigate to home
+// Navigate to different sections
 function navigateTo(section) {
   if (section === 'home') {
     // Hide applications section, show other sections
     document.getElementById('applications-section').style.display = 'none';
     document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+  } else if (section === 'find-tutor' || section === 'schedule' || section === 'staff-portal') {
+    // Hide applications section first
+    document.getElementById('applications-section').style.display = 'none';
+    // Scroll to the target section
+    const target = document.getElementById(section);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
 
 // Show applications section
 async function showApplicationsSection() {
-  // Hide other main sections
+  // Display the applications section
   document.getElementById('applications-section').style.display = 'block';
   
   // Scroll to applications section
@@ -1690,10 +1793,13 @@ async function showApplicationsSection() {
 
 // Load applications from API
 async function loadApplications() {
+  const applicationsList = document.getElementById('applications-list');
+  
   try {
     const currentUser = authModule ? authModule.getCurrentUser() : null;
     
     if (!currentUser) {
+      applicationsList.innerHTML = '<div class="no-applications">Please login to view applications.</div>';
       showError('Please login to view applications');
       return;
     }
@@ -1710,10 +1816,12 @@ async function loadApplications() {
       allApplications = result.data;
       renderApplications(currentApplicationFilter);
     } else {
+      applicationsList.innerHTML = '<div class="no-applications">Failed to load applications. Please try again.</div>';
       showError(result.message || 'Failed to load applications');
     }
   } catch (error) {
     console.error('Error loading applications:', error);
+    applicationsList.innerHTML = '<div class="no-applications">Network error. Please check your connection and try again.</div>';
     showError('Network error. Please check your connection.');
   }
 }
@@ -1777,52 +1885,57 @@ function createApplicationCard(app) {
     minute: '2-digit'
   });
   
+  // Validate and sanitize URLs
+  const qualificationLink = isValidUrl(app.qualificationDocumentLink) ? escapeHtml(app.qualificationDocumentLink) : '#';
+  const teachingVideoLink = isValidUrl(app.teachingVideoLink) ? escapeHtml(app.teachingVideoLink) : '#';
+  const academicResultsLink = isValidUrl(app.academicResultsLink) ? escapeHtml(app.academicResultsLink) : '#';
+  
   card.innerHTML = `
     <div class="application-header">
-      <div class="application-email">${app.email}</div>
+      <div class="application-email">${escapeHtml(app.email)}</div>
       <span class="application-status-badge ${statusClass}">${statusText}</span>
     </div>
     
     <div class="application-details">
       <div class="detail-item">
         <div class="detail-label">Subject</div>
-        <div class="detail-value">${app.subject} (${app.subjectCode})</div>
+        <div class="detail-value">${escapeHtml(app.subject)} (${escapeHtml(app.subjectCode)})</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Level</div>
-        <div class="detail-value">${app.teachingLevel}</div>
+        <div class="detail-value">${escapeHtml(app.teachingLevel)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Examination Board</div>
-        <div class="detail-value">${app.examinationBoard}</div>
+        <div class="detail-value">${escapeHtml(app.examinationBoard)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Academic Result</div>
-        <div class="detail-value">${app.academicResult}</div>
+        <div class="detail-value">${escapeHtml(app.academicResult)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Format</div>
-        <div class="detail-value">${app.teachingFormat}</div>
+        <div class="detail-value">${escapeHtml(app.teachingFormat)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Country</div>
-        <div class="detail-value">${app.country}</div>
+        <div class="detail-value">${escapeHtml(app.country)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Languages</div>
-        <div class="detail-value">${app.languagesSpoken}</div>
+        <div class="detail-value">${escapeHtml(app.languagesSpoken)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Discord</div>
-        <div class="detail-value">${app.discordUsername}</div>
+        <div class="detail-value">${escapeHtml(app.discordUsername)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Highest Qualification</div>
-        <div class="detail-value">${app.highestQualification}</div>
+        <div class="detail-value">${escapeHtml(app.highestQualification)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Experience</div>
-        <div class="detail-value">${app.teachingExperience}</div>
+        <div class="detail-value">${escapeHtml(app.teachingExperience)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Submitted</div>
@@ -1832,13 +1945,13 @@ function createApplicationCard(app) {
     
     <div class="application-bio">
       <div class="detail-label">Professional Bio</div>
-      <div class="detail-value">${app.professionalBio}</div>
+      <div class="detail-value">${escapeHtml(app.professionalBio)}</div>
     </div>
     
     <div class="application-links">
-      <a href="${app.qualificationDocumentLink}" target="_blank" class="link-button">📄 Qualification Document</a>
-      <a href="${app.teachingVideoLink}" target="_blank" class="link-button">🎥 Teaching Video</a>
-      <a href="${app.academicResultsLink}" target="_blank" class="link-button">📊 Academic Results</a>
+      ${isValidUrl(app.qualificationDocumentLink) ? `<a href="${qualificationLink}" target="_blank" rel="noopener noreferrer" class="link-button">📄 Qualification Document</a>` : '<span class="link-button" style="opacity: 0.5; cursor: not-allowed;" title="Document not provided">📄 No Document</span>'}
+      ${isValidUrl(app.teachingVideoLink) ? `<a href="${teachingVideoLink}" target="_blank" rel="noopener noreferrer" class="link-button">🎥 Teaching Video</a>` : '<span class="link-button" style="opacity: 0.5; cursor: not-allowed;" title="Video not provided">🎥 No Video</span>'}
+      ${isValidUrl(app.academicResultsLink) ? `<a href="${academicResultsLink}" target="_blank" rel="noopener noreferrer" class="link-button">📊 Academic Results</a>` : '<span class="link-button" style="opacity: 0.5; cursor: not-allowed;" title="Results not provided">📊 No Results</span>'}
     </div>
     
     <div class="application-actions">
@@ -1862,15 +1975,36 @@ function createApplicationCard(app) {
 
 // Update application status
 async function updateApplicationStatus(applicationId, newStatus) {
-  if (!confirm(`Are you sure you want to ${newStatus} this application?`)) {
+  // Map status values to user-friendly action verbs
+  const statusToAction = {
+    'approved': 'approve',
+    'rejected': 'reject',
+    'pending': 'mark as pending'
+  };
+  
+  const actionVerb = statusToAction[newStatus] || newStatus;
+  
+  if (!confirm(`Are you sure you want to ${actionVerb} this application?`)) {
     return;
   }
+  
+  // Disable all action buttons to prevent race conditions
+  const allActionButtons = document.querySelectorAll('.action-button');
+  const originalDisabledStates = new Map();
+  allActionButtons.forEach(btn => {
+    originalDisabledStates.set(btn, btn.disabled);
+    btn.disabled = true;
+  });
   
   try {
     const currentUser = authModule ? authModule.getCurrentUser() : null;
     
     if (!currentUser) {
       showError('Please login to update applications');
+      // Restore original disabled states
+      allActionButtons.forEach(btn => {
+        btn.disabled = originalDisabledStates.get(btn);
+      });
       return;
     }
     
@@ -1887,22 +2021,53 @@ async function updateApplicationStatus(applicationId, newStatus) {
     
     if (result.success) {
       showSuccess(`Application ${newStatus} successfully!`);
-      // Reload applications
+      // Reload applications (which will re-render with correct button states)
       await loadApplications();
     } else {
       showError(result.message || 'Failed to update application');
+      // Restore original disabled states on error
+      allActionButtons.forEach(btn => {
+        btn.disabled = originalDisabledStates.get(btn);
+      });
     }
   } catch (error) {
     console.error('Error updating application:', error);
     showError('Network error. Please check your connection.');
+    // Restore original disabled states on error
+    allActionButtons.forEach(btn => {
+      btn.disabled = originalDisabledStates.get(btn);
+    });
   }
 }
 
 // Initialize event listeners after DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Mobile sidebar toggle
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebar = document.getElementById('left-sidebar');
+  
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-open');
+      // Update button icon
+      this.textContent = sidebar.classList.contains('mobile-open') ? '✕' : '☰';
+    });
+    
+    // Close sidebar when clicking a nav item on mobile
+    document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        if (window.innerWidth <= 480) {
+          sidebar.classList.remove('mobile-open');
+          sidebarToggle.textContent = '☰';
+        }
+      });
+    });
+  }
+  
   // Sidebar navigation event listeners
   document.querySelectorAll('.sidebar-nav-item').forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function(e) {
+      e.preventDefault(); // Prevent default anchor behavior
       const action = this.getAttribute('data-nav-action');
       
       switch(action) {
@@ -1910,13 +2075,13 @@ document.addEventListener('DOMContentLoaded', function() {
           navigateTo('home');
           break;
         case 'find-tutor':
-          scrollToSection('find-tutor');
+          navigateTo('find-tutor');
           break;
         case 'schedule':
-          scrollToSection('schedule');
+          navigateTo('schedule');
           break;
         case 'staff-portal':
-          scrollToSection('staff-portal');
+          navigateTo('staff-portal');
           break;
         case 'applications':
           showApplicationsSection();
@@ -1934,7 +2099,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Expose functions to window for cross-module access
+// ============================================
+// Global Function Exposure
+// ============================================
+// The following functions are exposed to the window object because they are
+// called from dynamically rendered elements and event handlers that need
+// access across different scopes:
+// - navigateTo: Called from sidebar navigation items
+// - showApplicationsSection: Called from sidebar "See Applications" button
+// - filterApplications: Called from application filter tab buttons
+// - updateApplicationStatus: Called from dynamically created action buttons in application cards
 window.navigateTo = navigateTo;
 window.showApplicationsSection = showApplicationsSection;
 window.filterApplications = filterApplications;

@@ -886,8 +886,7 @@ app.get('/api/tutor-applications', requireStaffOrAdmin, async (req, res) => {
     console.error('Error fetching tutor applications:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch applications',
-      error: error.message
+      message: 'Failed to fetch applications'
     });
   }
 });
@@ -898,6 +897,14 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
     const { id } = req.params;
     const { status } = req.body;
     
+    // Validate MongoDB ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid application ID format'
+      });
+    }
+    
     // Validate status
     if (!status || !VALID_APPLICATION_STATUSES.includes(status)) {
       return res.status(400).json({
@@ -906,12 +913,28 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
       });
     }
     
+    // Get current application for audit trail
+    const currentApplication = await TutorApplication.findById(id);
+    
+    if (!currentApplication) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found'
+      });
+    }
+    
+    // Store previous status for audit logging
+    const previousStatus = currentApplication.status;
+    
     // Update application
     const application = await TutorApplication.findByIdAndUpdate(
       id,
       { status },
       { new: true }
     );
+    
+    // Log audit trail
+    console.log(`[AUDIT] Application ${id} status changed from "${previousStatus}" to "${status}" by staff member ${req.user?.uid || 'unknown'} at ${new Date().toISOString()}`);
     
     if (!application) {
       return res.status(404).json({
@@ -933,7 +956,7 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
               <h2 style="color: #2e7d32;">Congratulations! 🎉</h2>
               <p>Dear Applicant,</p>
               <p>We are pleased to inform you that your tutor application for <strong>${application.subject}</strong> has been <strong>approved</strong>!</p>
-              <p>You can now start teaching on Tutors Link. Our team will contact you via Discord at <strong>${application.discordUsername}</strong> with next steps.</p>
+              <p>You can now start teaching on Tutors Link. Our team will contact you primarily via Discord at <strong>${application.discordUsername}</strong> with next steps. If we are unable to reach you on Discord, we will follow up using this email address.</p>
               <p>Welcome to the Tutors Link family!</p>
               <br>
               <p>Best regards,<br>The Tutors Link Team</p>
@@ -972,8 +995,7 @@ app.put('/api/tutor-applications/:id', requireStaffOrAdmin, async (req, res) => 
     console.error('Error updating application status:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to update application',
-      error: error.message
+      message: 'Failed to update application'
     });
   }
 });
