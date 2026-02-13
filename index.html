@@ -8,7 +8,7 @@
 <style>
 /* Base Reset */
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
-body {background:#000; color:#fff; overflow-x:hidden;}
+body {background:#000; color:#fff; overflow-x:hidden; padding-top: 70px;}
 a, button {text-decoration:none; color:inherit; cursor:pointer;}
 .container {max-width:1200px; margin:0 auto; padding:0 20px;}
 
@@ -70,11 +70,14 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
 .top-banner {
   background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   padding: 15px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 999;
   box-shadow: 0 4px 20px rgba(255, 0, 255, 0.3);
   border-bottom: 2px solid #ff00ff;
+  transition: left 0.3s ease, width 0.3s ease;
 }
 .banner-content {
   max-width: 1400px;
@@ -644,11 +647,11 @@ body.sidebar-active .top-banner {
     <h2>🎓 Navigation</h2>
   </div>
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item" data-nav-action="home">🏠 Home</a>
-    <a class="sidebar-nav-item" data-nav-action="find-tutor">🔍 Find a Tutor</a>
-    <a class="sidebar-nav-item" id="sidebar-schedule-btn" data-nav-action="schedule" style="display:none;">📅 Schedule</a>
-    <a class="sidebar-nav-item" id="sidebar-staff-portal-btn" data-nav-action="staff-portal" style="display:none;">👥 Staff Portal</a>
-    <a class="sidebar-nav-item" id="sidebar-applications-btn" data-nav-action="applications" style="display:none;">📋 See Applications</a>
+    <a href="#" class="sidebar-nav-item" data-nav-action="home">🏠 Home</a>
+    <a href="#" class="sidebar-nav-item" data-nav-action="find-tutor">🔍 Find a Tutor</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-schedule-btn" data-nav-action="schedule" style="display:none;">📅 Schedule</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-staff-portal-btn" data-nav-action="staff-portal" style="display:none;">👥 Staff Portal</a>
+    <a href="#" class="sidebar-nav-item" id="sidebar-applications-btn" data-nav-action="applications" style="display:none;">📋 See Applications</a>
   </nav>
 </div>
 
@@ -1664,21 +1667,54 @@ window.addEventListener('click', (e) => {
 // ============================================
 // Applications Management (Staff/Admin)
 // ============================================
+
+// HTML escaping utility to prevent XSS attacks
+function escapeHtml(unsafe) {
+  if (unsafe === null || unsafe === undefined) {
+    return '';
+  }
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Validate URL to prevent javascript: and data: URLs
+function isValidUrl(url) {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 let currentApplicationFilter = 'all';
 let allApplications = [];
 
-// Navigate to home
+// Navigate to different sections
 function navigateTo(section) {
   if (section === 'home') {
     // Hide applications section, show other sections
     document.getElementById('applications-section').style.display = 'none';
     document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+  } else if (section === 'find-tutor' || section === 'schedule' || section === 'staff-portal') {
+    // Hide applications section first
+    document.getElementById('applications-section').style.display = 'none';
+    // Scroll to the target section
+    const target = document.getElementById(section);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
 
 // Show applications section
 async function showApplicationsSection() {
-  // Hide other main sections
+  // Display the applications section
   document.getElementById('applications-section').style.display = 'block';
   
   // Scroll to applications section
@@ -1690,10 +1726,13 @@ async function showApplicationsSection() {
 
 // Load applications from API
 async function loadApplications() {
+  const applicationsList = document.getElementById('applications-list');
+  
   try {
     const currentUser = authModule ? authModule.getCurrentUser() : null;
     
     if (!currentUser) {
+      applicationsList.innerHTML = '<div class="no-applications">Please login to view applications.</div>';
       showError('Please login to view applications');
       return;
     }
@@ -1710,10 +1749,12 @@ async function loadApplications() {
       allApplications = result.data;
       renderApplications(currentApplicationFilter);
     } else {
+      applicationsList.innerHTML = '<div class="no-applications">Failed to load applications. Please try again.</div>';
       showError(result.message || 'Failed to load applications');
     }
   } catch (error) {
     console.error('Error loading applications:', error);
+    applicationsList.innerHTML = '<div class="no-applications">Network error. Please check your connection and try again.</div>';
     showError('Network error. Please check your connection.');
   }
 }
@@ -1777,52 +1818,57 @@ function createApplicationCard(app) {
     minute: '2-digit'
   });
   
+  // Validate and sanitize URLs
+  const qualificationLink = isValidUrl(app.qualificationDocumentLink) ? escapeHtml(app.qualificationDocumentLink) : '#';
+  const teachingVideoLink = isValidUrl(app.teachingVideoLink) ? escapeHtml(app.teachingVideoLink) : '#';
+  const academicResultsLink = isValidUrl(app.academicResultsLink) ? escapeHtml(app.academicResultsLink) : '#';
+  
   card.innerHTML = `
     <div class="application-header">
-      <div class="application-email">${app.email}</div>
+      <div class="application-email">${escapeHtml(app.email)}</div>
       <span class="application-status-badge ${statusClass}">${statusText}</span>
     </div>
     
     <div class="application-details">
       <div class="detail-item">
         <div class="detail-label">Subject</div>
-        <div class="detail-value">${app.subject} (${app.subjectCode})</div>
+        <div class="detail-value">${escapeHtml(app.subject)} (${escapeHtml(app.subjectCode)})</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Level</div>
-        <div class="detail-value">${app.teachingLevel}</div>
+        <div class="detail-value">${escapeHtml(app.teachingLevel)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Examination Board</div>
-        <div class="detail-value">${app.examinationBoard}</div>
+        <div class="detail-value">${escapeHtml(app.examinationBoard)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Academic Result</div>
-        <div class="detail-value">${app.academicResult}</div>
+        <div class="detail-value">${escapeHtml(app.academicResult)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Format</div>
-        <div class="detail-value">${app.teachingFormat}</div>
+        <div class="detail-value">${escapeHtml(app.teachingFormat)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Country</div>
-        <div class="detail-value">${app.country}</div>
+        <div class="detail-value">${escapeHtml(app.country)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Languages</div>
-        <div class="detail-value">${app.languagesSpoken}</div>
+        <div class="detail-value">${escapeHtml(app.languagesSpoken)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Discord</div>
-        <div class="detail-value">${app.discordUsername}</div>
+        <div class="detail-value">${escapeHtml(app.discordUsername)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Highest Qualification</div>
-        <div class="detail-value">${app.highestQualification}</div>
+        <div class="detail-value">${escapeHtml(app.highestQualification)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Teaching Experience</div>
-        <div class="detail-value">${app.teachingExperience}</div>
+        <div class="detail-value">${escapeHtml(app.teachingExperience)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Submitted</div>
@@ -1832,19 +1878,19 @@ function createApplicationCard(app) {
     
     <div class="application-bio">
       <div class="detail-label">Professional Bio</div>
-      <div class="detail-value">${app.professionalBio}</div>
+      <div class="detail-value">${escapeHtml(app.professionalBio)}</div>
     </div>
     
     <div class="application-links">
-      <a href="${app.qualificationDocumentLink}" target="_blank" class="link-button">📄 Qualification Document</a>
-      <a href="${app.teachingVideoLink}" target="_blank" class="link-button">🎥 Teaching Video</a>
-      <a href="${app.academicResultsLink}" target="_blank" class="link-button">📊 Academic Results</a>
+      <a href="${qualificationLink}" target="_blank" rel="noopener noreferrer" class="link-button">📄 Qualification Document</a>
+      <a href="${teachingVideoLink}" target="_blank" rel="noopener noreferrer" class="link-button">🎥 Teaching Video</a>
+      <a href="${academicResultsLink}" target="_blank" rel="noopener noreferrer" class="link-button">📊 Academic Results</a>
     </div>
     
     <div class="application-actions">
-      ${app.status !== 'approved' ? `<button class="action-button action-approve" data-app-id="${app._id}" data-action="approved">✅ Approve</button>` : ''}
-      ${app.status !== 'rejected' ? `<button class="action-button action-reject" data-app-id="${app._id}" data-action="rejected">❌ Reject</button>` : ''}
-      ${app.status !== 'pending' ? `<button class="action-button action-pending" data-app-id="${app._id}" data-action="pending">⏳ Mark as Pending</button>` : ''}
+      ${app.status !== 'approved' ? `<button class="action-button action-approve" data-app-id="${escapeHtml(app._id)}" data-action="approved">✅ Approve</button>` : ''}
+      ${app.status !== 'rejected' ? `<button class="action-button action-reject" data-app-id="${escapeHtml(app._id)}" data-action="rejected">❌ Reject</button>` : ''}
+      ${app.status !== 'pending' ? `<button class="action-button action-pending" data-app-id="${escapeHtml(app._id)}" data-action="pending">⏳ Mark as Pending</button>` : ''}
     </div>
   `;
   
@@ -1862,9 +1908,22 @@ function createApplicationCard(app) {
 
 // Update application status
 async function updateApplicationStatus(applicationId, newStatus) {
-  if (!confirm(`Are you sure you want to ${newStatus} this application?`)) {
+  // Map status values to user-friendly action verbs
+  const statusToAction = {
+    'approved': 'approve',
+    'rejected': 'reject',
+    'pending': 'mark as pending'
+  };
+  
+  const actionVerb = statusToAction[newStatus] || newStatus;
+  
+  if (!confirm(`Are you sure you want to ${actionVerb} this application?`)) {
     return;
   }
+  
+  // Disable all action buttons to prevent race conditions
+  const allActionButtons = document.querySelectorAll('.action-button');
+  allActionButtons.forEach(btn => btn.disabled = true);
   
   try {
     const currentUser = authModule ? authModule.getCurrentUser() : null;
@@ -1895,6 +1954,9 @@ async function updateApplicationStatus(applicationId, newStatus) {
   } catch (error) {
     console.error('Error updating application:', error);
     showError('Network error. Please check your connection.');
+  } finally {
+    // Re-enable action buttons after the update completes
+    allActionButtons.forEach(btn => btn.disabled = false);
   }
 }
 
@@ -1902,7 +1964,8 @@ async function updateApplicationStatus(applicationId, newStatus) {
 document.addEventListener('DOMContentLoaded', function() {
   // Sidebar navigation event listeners
   document.querySelectorAll('.sidebar-nav-item').forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function(e) {
+      e.preventDefault(); // Prevent default anchor behavior
       const action = this.getAttribute('data-nav-action');
       
       switch(action) {
@@ -1910,13 +1973,13 @@ document.addEventListener('DOMContentLoaded', function() {
           navigateTo('home');
           break;
         case 'find-tutor':
-          scrollToSection('find-tutor');
+          navigateTo('find-tutor');
           break;
         case 'schedule':
-          scrollToSection('schedule');
+          navigateTo('schedule');
           break;
         case 'staff-portal':
-          scrollToSection('staff-portal');
+          navigateTo('staff-portal');
           break;
         case 'applications':
           showApplicationsSection();
