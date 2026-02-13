@@ -138,6 +138,28 @@ p:hover, h4:hover, h3:hover {color:#ff0;}
   box-shadow: 0 4px 15px rgba(255, 0, 255, 0.5);
 }
 
+/* Hamburger Menu Toggle (Mobile) */
+.sidebar-toggle {
+  display: none;
+  background: rgba(255, 0, 255, 0.2);
+  border: 2px solid #ff00ff;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 0, 255, 0.4);
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+}
+
 /* Staff Portal */
 #staff-portal {
   background: #111;
@@ -622,16 +644,30 @@ body.sidebar-active .top-banner {
   }
 }
 @media(max-width:480px){
+  .sidebar-toggle {
+    display: block;
+  }
+  
   .left-sidebar {
     width: 100%;
-    height: auto;
-    position: relative;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -100%;
     border-right: none;
-    border-bottom: 2px solid #ff00ff;
+    border-bottom: none;
+    transition: left 0.3s ease;
+    z-index: 1000;
   }
+  
+  .left-sidebar.mobile-open {
+    left: 0;
+  }
+  
   body.sidebar-active {
     margin-left: 0;
   }
+  
   body.sidebar-active .top-banner {
     left: 0;
     width: 100%;
@@ -640,6 +676,9 @@ body.sidebar-active .top-banner {
 </style>
 </head>
 <body>
+
+<!-- Hamburger Menu Toggle (Mobile) -->
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle navigation menu">☰</button>
 
 <!-- Left Sidebar Navigation -->
 <div class="left-sidebar" id="left-sidebar">
@@ -1354,9 +1393,14 @@ function updateUIForRole(user, userData) {
     
     // Show left sidebar for all authenticated users
     const sidebar = document.getElementById('left-sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
     if (sidebar) {
       sidebar.style.display = 'block';
       document.body.classList.add('sidebar-active');
+    }
+    // Show hamburger toggle button on mobile for authenticated users
+    if (sidebarToggle) {
+      sidebarToggle.style.display = 'block';
     }
     
     // Show sidebar nav items based on role
@@ -1385,9 +1429,14 @@ function updateUIForRole(user, userData) {
     // Show login/signup, hide profile and logout
     // Hide left sidebar
     const sidebar = document.getElementById('left-sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
     if (sidebar) {
       sidebar.style.display = 'none';
       document.body.classList.remove('sidebar-active');
+    }
+    // Hide hamburger toggle button for unauthenticated users
+    if (sidebarToggle) {
+      sidebarToggle.style.display = 'none';
     }
     
     // Show login/signup, hide logout
@@ -1962,6 +2011,28 @@ async function updateApplicationStatus(applicationId, newStatus) {
 
 // Initialize event listeners after DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Mobile sidebar toggle
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebar = document.getElementById('left-sidebar');
+  
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-open');
+      // Update button icon
+      this.textContent = sidebar.classList.contains('mobile-open') ? '✕' : '☰';
+    });
+    
+    // Close sidebar when clicking a nav item on mobile
+    document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        if (window.innerWidth <= 480) {
+          sidebar.classList.remove('mobile-open');
+          sidebarToggle.textContent = '☰';
+        }
+      });
+    });
+  }
+  
   // Sidebar navigation event listeners
   document.querySelectorAll('.sidebar-nav-item').forEach(item => {
     item.addEventListener('click', function(e) {
