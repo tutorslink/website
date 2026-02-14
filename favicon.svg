@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Professional T and L monogram for Tutors Link -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)"/>
+  
+  <!-- T and L monogram in white -->
+  <path d="M 25 25 L 75 25 L 75 35 L 55 35 L 55 75 L 45 75 L 45 35 L 25 35 Z" fill="white"/>
+  <path d="M 30 45 L 40 45 L 40 75 L 70 75 L 70 65 L 40 65 L 40 45 L 30 45 Z" fill="white" opacity="0.9"/>
+</svg>
