@@ -4,27 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apply as Tutor - Tutors Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif;}
-body {background:#000; color:#fff; overflow-x:hidden; padding:20px;}
+body {background:#f8f9fa; color:#2d3748; overflow-x:hidden; padding:20px;}
 .container {max-width:800px; margin:0 auto; padding:40px 20px;}
 
 header {
-  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   text-align:center;
   padding:60px 20px;
-  border-radius:20px;
+  border-radius:16px;
   margin-bottom:40px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
 }
-header h1 {font-size:2.5rem; margin-bottom:10px;}
-header p {font-size:1.1rem; opacity:0.9;}
+header h1 {font-size:2.5rem; margin-bottom:10px; color:#fff; font-weight: 700;}
+header p {font-size:1.1rem; opacity:0.95; color:#fff;}
 
 .form-container {
-  background:#111;
+  background:#fff;
   padding:40px;
-  border-radius:20px;
-  box-shadow:0 0 30px #ff00ff33;
+  border-radius:16px;
+  box-shadow:0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e2e8f0;
 }
 
 .form-section {
@@ -34,9 +37,10 @@ header p {font-size:1.1rem; opacity:0.9;}
 .form-section h2 {
   font-size:1.5rem;
   margin-bottom:20px;
-  color:#ff0;
-  border-bottom:2px solid #ff00ff;
+  color:#667eea;
+  border-bottom:2px solid #e2e8f0;
   padding-bottom:10px;
+  font-weight: 700;
 }
 
 .form-group {
@@ -47,11 +51,11 @@ label {
   display:block;
   margin-bottom:8px;
   font-weight:600;
-  color:#eee;
+  color:#4a5568;
 }
 
 label .required {
-  color:#ff0;
+  color:#e53e3e;
   margin-left:3px;
 }
 
@@ -59,17 +63,18 @@ input, select, textarea {
   width:100%;
   padding:12px;
   border-radius:8px;
-  border:2px solid #333;
-  background:#222;
-  color:#fff;
+  border:2px solid #e2e8f0;
+  background:#f7fafc;
+  color:#2d3748;
   font-size:1rem;
-  transition:0.3s;
+  transition:all 0.3s;
 }
 
 input:focus, select:focus, textarea:focus {
   outline:none;
-  border-color:#ff00ff;
-  box-shadow:0 0 10px #ff00ff44;
+  border-color:#667eea;
+  box-shadow:0 0 0 3px rgba(102, 126, 234, 0.1);
+  background:#fff;
 }
 
 textarea {
@@ -92,25 +97,26 @@ textarea {
 .radio-option input[type="radio"] {
   width:auto;
   margin:0;
+  accent-color: #667eea;
 }
 
 button {
-  background:linear-gradient(135deg, #ff00ff, #00f0ff);
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color:#fff;
   padding:15px 40px;
   border:none;
-  border-radius:10px;
+  border-radius:8px;
   font-size:1.1rem;
   font-weight:700;
   cursor:pointer;
-  transition:0.3s;
+  transition:all 0.3s;
   width:100%;
   margin-top:20px;
 }
 
 button:hover {
   transform:translateY(-2px);
-  box-shadow:0 5px 20px #ff00ff88;
+  box-shadow:0 4px 20px rgba(102, 126, 234, 0.4);
 }
 
 button:disabled {
@@ -120,18 +126,18 @@ button:disabled {
 }
 
 .info-box {
-  background:#222;
+  background:#f7fafc;
   padding:15px;
   border-radius:8px;
-  border-left:4px solid #ff0;
+  border-left:4px solid #667eea;
   margin-bottom:20px;
   font-size:0.9rem;
-  color:#ddd;
+  color:#4a5568;
 }
 
 .auth-required {
-  background:#ff000022;
-  border:2px solid #ff0000;
+  background:#fff5f5;
+  border:2px solid #fc8181;
   padding:20px;
   border-radius:10px;
   text-align:center;
@@ -139,19 +145,19 @@ button:disabled {
 }
 
 .auth-required h3 {
-  color:#ff0000;
+  color:#e53e3e;
   margin-bottom:10px;
 }
 
 .auth-required button {
-  background:#ff0000;
+  background:#e53e3e;
   width:auto;
   margin:10px 5px 0;
 }
 
 .success-message {
-  background:#00ff0022;
-  border:2px solid #00ff00;
+  background:#f0fff4;
+  border:2px solid #9ae6b4;
   padding:30px;
   border-radius:10px;
   text-align:center;
@@ -159,36 +165,36 @@ button:disabled {
 }
 
 .success-message h2 {
-  color:#00ff00;
+  color:#38a169;
   margin-bottom:15px;
 }
 
 .error-message {
-  background:#ff000022;
-  border:2px solid #ff0000;
+  background:#fff5f5;
+  border:2px solid #fc8181;
   padding:15px;
   border-radius:8px;
   margin-bottom:20px;
-  color:#ff0000;
+  color:#e53e3e;
   display:none;
 }
 
 .back-link {
   display:inline-block;
   margin-bottom:20px;
-  color:#ff0;
+  color:#667eea;
   text-decoration:none;
   font-weight:600;
   transition:0.3s;
 }
 
 .back-link:hover {
-  color:#ff00ff;
+  color:#5a67d8;
 }
 
 .char-counter {
   font-size:0.85rem;
-  color:#aaa;
+  color:#718096;
   margin-top:5px;
 }
 
